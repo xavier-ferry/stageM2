@@ -1,0 +1,23 @@
+var2 Pr0, Pr1, Pr2;
+var2 Pst0, Pst1, Pst2;
+
+pred relationGPomset(var1 x, y, var2 Pre0, Pre1, Pre2, Post0, Post1, Post2) =
+  x < y &
+  (
+    ( x in Post0 & y in Pre0 & (all1 z: (z>x & z<y)=> z notin Post0 )) |
+    ( x in Post1 & y in Pre1 & (all1 z: (z>x & z<y)=> z notin Post1 )) |
+    ( x in Post2 & y in Pre2 & (all1 z: (z>x & z<y)=> z notin Post2 ))
+  );
+
+pred partialOrder(var1 x,y, var2 Pre0, Pre1, Pre2, Post0, Post1, Post2) =
+  all2 X: ((x in X & (all1 y,z:(relationGPomset(y,z,Pre0,Pre1,Pre2,Post0,Post1,Post2) & y in X)
+      => z in X)) => y in X);
+
+pred causalite(var1 x,y, var2 Pre0, Pre1, Pre2, Post0, Post1, Post2) =
+  partialOrder(x,y,Pre0,Pre1,Pre2,Post0,Post1,Post2) & ~(ex1 z : z ~=x & z~=y &
+    (partialOrder(x,z,Pre0,Pre1,Pre2,Post0,Post1,Post2) &
+      partialOrder(z,y,Pre0,Pre1,Pre2,Post0,Post1,Post2)
+      )
+);
+#    ---------------------------------------------------------
+#    ---------------------------------------------------------
