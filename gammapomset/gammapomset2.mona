@@ -1,5 +1,5 @@
-#Traduction de la relation de causalite sur les gamma-pomset
-pred relationGPomset(var1 x,y, var2 Pre0, Pre1, Post0, Post1) =
+#Traduction de la relation de successeurImmediat sur les gamma-pomset
+pred relationGPomset(var1 x,y, var2 Pre0, Pre1, Post0, Post1, Mot) =
   x < y &
   (
     ( x in Post0 & y in Pre0 & (all1 z:(z>x & z<y) => z notin Post0)) |
@@ -7,35 +7,32 @@ pred relationGPomset(var1 x,y, var2 Pre0, Pre1, Post0, Post1) =
   );
 
 #Traduction de la relation d'ordre partiel
-pred partialOrder(var1 x, y, var2 Pre0, Pre1, Post0, Post1) =
+pred partialOrder(var1 x, y, var2 Pre0, Pre1, Post0, Post1, Mot) =
   all2 X: ( (x in X &
-            (all1 y,z: (relationGPomset(y,z,Pre0,Pre1,Post0,Post1) & y in X)
-            => z in X)) => y in X);
+            (all1 u,v: (relationGPomset(u,v,Pre0,Pre1,Post0,Post1, Mot) & u in X)
+            => v in X)) => y in X);
 
 #Traduction de la relation de causalité sur les Pomsets
-pred causalite(var1 x, y, var2 Pre0, Pre1, Post0, Post1) =
-  partialOrder(x,y,Pre0,Pre1,Post0,Post1) & ~(ex1 z: z~=x & z~=y &
-      (partialOrder(x,z,Pre0,Pre1,Post0, Post1) &
-        partialOrder(z,y,Pre0,Pre1,Post0,Post1)
+pred successeurImmediat(var1 x, y, var2 Pre0, Pre1, Post0, Post1, Mot) =
+  x ~= y &
+  partialOrder(x,y,Pre0,Pre1,Post0,Post1,Mot) & ~(ex1 z: z~=x & z~=y &
+      (partialOrder(x,z,Pre0,Pre1,Post0, Post1,Mot) &
+        partialOrder(z,y,Pre0,Pre1,Post0,Post1,Mot)
       )
   );
 
   #    ---------------------------------------------------------
-  pred EXP( var2 X, P, Pre0, Pre1, Post0, Post1) =
+  pred EXP( var2 X, P, Pre0, Pre1, Post0, Post1, Mot) =
     all1 x : (
       (x in X)
         <=>
-      ( ex1 y: y in P & causalite(x,y,Pre0,Pre1,Post0,Post1) & y > x)
+      ( ex1 y: y in P & successeurImmediat(x,y,Pre0,Pre1,Post0,Post1, Mot))
     )
   ;
   #    ---------------------------------------------------------
 
-    pred AXP( var2 X, P, Pre0, Pre1, Post0, Post1)=
-      all1 x : (
-        (x in X)
-          <=>
-        ~(ex1 y : ( y notin P) & causalite(x,y,Pre0, Pre1, Post0, Post1)  )
-      )
+    pred AXP( var2 X, P, Pre0, Pre1, Post0, Post1, Mot)=
+      EXP(Mot\X, Mot\P,Pre0,Pre1,Post0,Post1,Mot)
     ;
 
   #    ---------------------------------------------------------
