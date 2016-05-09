@@ -36,3 +36,10 @@ pred successeurImmediat(var1 x, y, var2 Pre0, Pre1, Post0, Post1, Mot) =
     ;
 
   #    ---------------------------------------------------------
+
+  pred pUq ( var2 RES, P, Q, Pre0, Pre1, Post0, Post1, Mot)=
+    all1 x : (
+          x in Q => x in RES  &
+          all1 y,z : (successeurImmediat(y,z,Pre0,Pre1,Post0,Post1, Mot) & y in P & z in RES) => y in RES
+    )
+  ;
