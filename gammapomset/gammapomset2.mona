@@ -43,9 +43,6 @@ pred pEUq ( var2 RES, P, Q, Pre0, Pre1, Post0, Post1, Mot)=
   )
 ;
 
-
-#    ---------------------------------------------------------
-
 pred pAUq ( var2 RES, P, Q, Pre0, Pre1, Post0, Post1, Mot)=
   all1 x :
       x in RES
@@ -58,3 +55,22 @@ pred pAUq ( var2 RES, P, Q, Pre0, Pre1, Post0, Post1, Mot)=
             (successeurImmediat(x,z,Pre0,Pre1,Post0,Post1, Mot) & z in RES)
         )
       );
+
+#    ---------------------------------------------------------
+
+pred pGUq(var2 RES,P,Q,Pre0,Pre1,Post0, Post1, Mot) =
+  all1 x :
+    x in RES
+      <=>
+    (
+      x in Q |
+      ( x in P &
+        ex1 z: (z in Q & z>x &  partialOrder(x,z,Pre0,Pre1,Post0, Post1,Mot))
+          & (all1 y:
+              ( y>x & y<z & partialOrder(x,y,Pre0,Pre1,Post0, Post1,Mot) &
+                partialOrder(y,z,Pre0,Pre1,Post0, Post1,Mot))
+                => y in P
+            )
+      )
+    )
+;
