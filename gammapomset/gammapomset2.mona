@@ -21,25 +21,40 @@ pred successeurImmediat(var1 x, y, var2 Pre0, Pre1, Post0, Post1, Mot) =
       )
   );
 
-  #    ---------------------------------------------------------
-  pred EXP( var2 X, P, Pre0, Pre1, Post0, Post1, Mot) =
-    all1 x : (
-      (x in X)
-        <=>
-      ( ex1 y: y in P & successeurImmediat(x,y,Pre0,Pre1,Post0,Post1, Mot))
-    )
-  ;
-  #    ---------------------------------------------------------
+#    ---------------------------------------------------------
+pred EXP( var2 RES, P, Pre0, Pre1, Post0, Post1, Mot) =
+  all1 x : (
+    (x in RES)
+      <=>
+    ( ex1 y: y in P & successeurImmediat(x,y,Pre0,Pre1,Post0,Post1, Mot))
+  )
+;
 
-    pred AXP( var2 X, P, Pre0, Pre1, Post0, Post1, Mot)=
-      EXP(Mot\X, Mot\P,Pre0,Pre1,Post0,Post1,Mot)
-    ;
+pred AXP( var2 RES, P, Pre0, Pre1, Post0, Post1, Mot)=
+  EXP(Mot\RES, Mot\P,Pre0,Pre1,Post0,Post1,Mot)
+;
 
-  #    ---------------------------------------------------------
+#    ---------------------------------------------------------
 
-  pred pUq ( var2 RES, P, Q, Pre0, Pre1, Post0, Post1, Mot)=
-    all1 x : (
-          x in Q => x in RES  &
-          all1 y,z : (successeurImmediat(y,z,Pre0,Pre1,Post0,Post1, Mot) & y in P & z in RES) => y in RES
-    )
-  ;
+pred pEUq ( var2 RES, P, Q, Pre0, Pre1, Post0, Post1, Mot)=
+  all1 x : (
+        x in Q => x in RES  &
+        all1 y,z : (successeurImmediat(y,z,Pre0,Pre1,Post0,Post1, Mot) & y in P & z in RES) => y in RES
+  )
+;
+
+
+#    ---------------------------------------------------------
+
+pred pAUq ( var2 RES, P, Q, Pre0, Pre1, Post0, Post1, Mot)=
+  all1 x :
+      x in RES
+      <=>
+      (
+        x in Q |
+        ( x in P &
+          all1 z :
+            ~(successeurImmediat(x,z,Pre0,Pre1,Post0,Post1, Mot)) |
+            (successeurImmediat(x,z,Pre0,Pre1,Post0,Post1, Mot) & z in RES)
+        )
+      );

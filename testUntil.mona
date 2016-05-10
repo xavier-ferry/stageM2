@@ -2,7 +2,7 @@ include "gammapomset/gammapomset2.mona";
   #    ---------------------------------------------------------
 
 
-  pred system(var2 Mot, Pre0, Pre1, P, Q, Post0, Post1) =
+  pred system2(var2 Mot, Pre0, Pre1, P, Q, Post0, Post1) =
     P = {1,2,4} &
     Q = {4} &
     Mot = {0,1,2,3,4} &
@@ -12,6 +12,18 @@ include "gammapomset/gammapomset2.mona";
     Post1 = {1,3}
   ;
 
+
+  pred system(var2 Mot, Pre0, Pre1, P, Q, Post0, Post1) =
+      P = {1,2,4,5} &
+      Q = {4,6} &
+      Mot = {0,1,2,3,4,5,6} &
+      Pre0 = {2,5,6} &
+      Pre1 = {2,3,4,5} &
+      Post0 = {0,2,5} &
+      Post1 = {1,3}
+    ;
+
+
   var2 Mot;
   var2 Pre0, Pre1;
   var2 Post0, Post1;
@@ -20,9 +32,12 @@ include "gammapomset/gammapomset2.mona";
   var2 Q;
   var2 EX;
   var2 AX;
-  var2 PUQ;
+  var2 PEUQ;
+  var2 PAUQ;
 
   system( Mot, Pre0, Pre1, P, Q, Post0, Post1);
   EXP(EX,P, Pre0,Pre1,Post0, Post1, Mot);
   AXP(AX,P, Pre0,Pre1,Post0, Post1, Mot);
-  pUq(PUQ,P,Q,Pre0,Pre1,Post0, Post1, Mot);
+  pEUq(PEUQ,P,Q,Pre0,Pre1,Post0, Post1, Mot);
+  pAUq(PAUQ,P,Q,Pre0,Pre1,Post0, Post1, Mot);
+  #pUq(PUQ,P,Q,Pre0,Pre1,Post0, Post1, Mot);
