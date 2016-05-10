@@ -34,8 +34,6 @@ pred AXP( var2 RES, P, Pre0, Pre1, Post0, Post1, Mot)=
   EXP(Mot\RES, Mot\P,Pre0,Pre1,Post0,Post1,Mot)
 ;
 
-#    ---------------------------------------------------------
-
 pred pEUq ( var2 RES, P, Q, Pre0, Pre1, Post0, Post1, Mot)=
   all1 x : (
         x in Q => x in RES  &
@@ -56,8 +54,6 @@ pred pAUq ( var2 RES, P, Q, Pre0, Pre1, Post0, Post1, Mot)=
         )
       );
 
-#    ---------------------------------------------------------
-
 pred pGUq(var2 RES,P,Q,Pre0,Pre1,Post0, Post1, Mot) =
   all1 x :
     x in RES
@@ -73,4 +69,32 @@ pred pGUq(var2 RES,P,Q,Pre0,Pre1,Post0, Post1, Mot) =
             )
       )
     )
+;
+
+
+
+#    ---------------------------------------------------------
+pred EFP( var2 RES, P, Pre0, Pre1, Post0, Post1, Mot) =
+  all1 x : (
+    (x in RES)
+      <=>
+    ( ex1 y: y in P & partialOrder(x,y,Pre0,Pre1,Post0,Post1, Mot))
+  )
+;
+
+pred EGP( var2 RES, P, Pre0, Pre1, Post0, Post1, Mot) =
+all1 x : (
+      (x in P & ~ex1 t : successeurImmediat(x,t,Pre0,Pre1,Post0,Post1, Mot)) => x in RES  &
+      (all1 y,z : (successeurImmediat(y,z,Pre0,Pre1,Post0,Post1, Mot) & y in P & z in RES) => y in RES)
+);
+
+#    ---------------------------------------------------------
+
+#NE FONCTIONNE PAS
+pred AFP( var2 RES, P, Pre0, Pre1, Post0, Post1, Mot)=
+  EGP(Mot\RES,Mot\P,Pre0,Pre1,Post0,Post1,Mot)
+;
+
+pred AGP( var2 RES, P, Pre0, Pre1, Post0, Post1, Mot)=
+  EFP(Mot\RES, Mot\P, Pre0, Pre1, Post0, Post1, Mot)
 ;
