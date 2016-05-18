@@ -1,4 +1,6 @@
-include "gammapomset/gammapomset2.mona";
+include "luaToMONA/mona/gammaPomset.mona";
+include "luaToMONA/mona/operateurs.mona";
+
   #    ---------------------------------------------------------
 
 
