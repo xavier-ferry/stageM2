@@ -3,6 +3,7 @@ require "config"
 file = io.open(operateursMona, "w")
 io.output(file) 
 
+io.write(operateursInclude);
 
 local prePost = ""
 
