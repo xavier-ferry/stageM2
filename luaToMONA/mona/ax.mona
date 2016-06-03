@@ -1,47 +1,60 @@
 include "operateurs.mona";
-var2 A0, B0, A0_, B0_;
-var2 Pre0, Post0;
-var2 P, AX,EX, Mot;
-
-pred ABdisjoint(var2 A0, B0, A0_, B0_) =
-(A0 inter B0) = empty &
-(A0_ inter B0_) = empty ;
+var2 Pre, Post, P, AX;
+P = {1,2,3};
+Pre = {1,2,3};
+Post = {0,1};
 
 
-pred trans1 (var2 A0, B0, A0_, B0_, P, AX, Pre0, Post0, Mot) =
-(B0 inter Pre0 = empty & B0 inter Post0 = empty) &
- ex1 x : (x in Pre0 & x in Post0 & x in P & x in AX ) =>( (A0_ = A0\Pre0 union Post0) & B0_ = B0 ) ;
+pred t1(var2 A, B, Pre, Post, P, AX ) =
+  all1 x :
+  (x+1 in A <=> (x in Post | (x in A & x notin Pre))) &
+  (x+1 in B <=> x in B) &
+  x in P & x in AX &
+
+  ~(x in B & x in Pre) & ~(x in B & x in Post)
+;
 
 
-pred trans2 (var2 A0, B0, A0_, B0_, P, AX, Pre0, Post0, Mot) =
-(B0_ inter Post0 = empty & A0 inter Pre0 = empty) &
- ex1 x : (x in Pre0 & x in Post0 & x in P & x in AX ) =>( (A0_ = A0 union Post0) & B0_ = B0\Pre0 ) ;
+pred t2(var2 A, B, Pre, Post, P, AX ) =
+all1 x :
+  (x+1 in A <=> (x in A | x in Post)) &
+  (x+1 in B <=> (x in B & x notin Pre)) &
+  x notin P & x in AX &
+
+  ~(x in A & x in Pre) & ~(x+1 in B & x in Post)
+;
 
 
-pred trans3 (var2 A0, B0, A0_, B0_, P, AX, Pre0, Post0, Mot) =
-((B0_ inter Post0 = empty & ex1 x : (x in Pre0 & x in Post0 & x in P & all2 EX : (EXP(EX,Mot\P,Pre0, Post0, Mot) & x in EX ) )) => (B0_ = B0 & A0_ = A0\Pre0 ) |
-(all1 b : b in Post0\A0_ => ex1 x : (x in Pre0& x in Post0 & x in P & all2 EX : (EXP(EX,Mot\P,Pre0, Post0, Mot) & x in EX) ) => A0_ = A0\Pre0 & B0_ = B0 union {b})) ;
+pred t3(var2 A, B, Pre, Post, P, AX ) =
+all1 x :
+  (x+1 in A <=> (x in A & x notin Pre)) &
+  (x+1 in B <=> (x in B & (x in B & x in Post))) &
+  (x+1 in B <=>(x in B | (x in Post & x+1 notin A))) &
+  x in P & x notin AX
+;
+
+pred t4(var2 A, B, Pre, Post, P, AX ) =
+all1 x :
+  (x+1 in A <=> x in A) &
+  (x+1 in B <=> x in B & x notin Pre & x in Post) &
+  (x+1 in B <=> ((x in B & x notin Pre)|(x in Post & x notin A))) &
+  x notin P & x notin AX
+;
+
+pred system2(var2 Pre, Post, P, AX) =
+ex2 A,B :(
+  (
+    t1(A,B,Pre,Post,P,AX) |
+    t2(A,B,Pre,Post,P,AX) |
+    t3(A,B,Pre,Post,P,AX) |
+    t4(A,B,Pre,Post,P,AX)
+  )
+);
+
+pred system(var2 Pre, Post, P, AX) =
+ex2 A,B :
+  t1(A,B,Pre,Post,P,AX);
 
 
-pred trans4 (var2 A0, B0, A0_, B0_, P, AX, Pre0, Post0, Mot) =
-((B0_\Pre0 inter Post0 = empty & ex1 x : (x in Pre0 & x in Post0 & x notin P &  all2 EX : (EXP(EX,Mot\P,Pre0, Post0, Mot) & x in EX ) )) => (B0_ = B0\Pre0 & A0_ = A0 ) |
-ex1 x : (all1 b : b in Post0\A0 => (x in Pre0 & x in Post0 & x notin P &  all2 EX : (EXP(EX,Mot\P,Pre0, Post0, Mot) & x in EX )) => A0_ = A0& B0_ = B0\Pre0 union {b})) ;
 
-
-pred AXp (var2 A0, B0, A0_, B0_,P, AX,Pre0, Post0, Mot )=
-ABdisjoint(A0, B0, A0_, B0_) & (
-  trans1(A0, B0, A0_, B0_,P,AX,Pre0, Post0,Mot) |
-  trans2(A0, B0, A0_, B0_,P,AX,Pre0, Post0,Mot) |
-  trans3(A0, B0, A0_, B0_,P,AX,Pre0, Post0,Mot) |
-  trans4(A0, B0, A0_, B0_,P,AX,Pre0, Post0,Mot) );
-
-
-pred system(var2 Mot, Pre0, P, Post0, A, B) =
-      A = {} &
-      B = {0} &
-      P = {2,4} &
-      Mot = {0,1,2,3,4} &
-      Pre0 = {2,4} &
-      Post0 = {0,2};
-system(Mot,Pre0,P,Post0, A0, B0);
-AXp(A0,B0,A0_, B0_, P, AX, Pre0, Post0, Mot);
+system(Pre,Post,P,AX);

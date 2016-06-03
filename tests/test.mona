@@ -1,11 +1,8 @@
 var2 X ;
 X  = {0};
 
-pred test ( var2 X ) =
 ex2 A : all1 i :(
     0 in A & (
     ( (i notin A ) & (i in X))
     => i+1 in A)
 );
-
-test(X);
