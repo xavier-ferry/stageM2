@@ -75,7 +75,7 @@ for i=0, gamma do
   transcond = transcond .. "~(x in B"..i.." & x in Pre"..i..") & ~(x+1 in A"..i.." & x in Post"..i..") &\n  "
   transcond = transcond .. "~(x in B"..i.." & x in Post"..i..")  &\n  "
   transimpl = transimpl .. "(x+1 in A"..i.." <=> (x in A"..i.." & x notin Post"..i..")) &\n  "
-  for k=0, gamma do 
+  for k=0, gamma do
     transimpl = transimpl .. "(x+1 in B"..i.." & ( x in B"..i.." | (x in Post"..k.." &  x+1 notin A"..k.."))) &\n  "
   end
 end
@@ -106,7 +106,7 @@ for i=0, gamma do
   transcond = transcond .. "~(x in A"..i.." & x in Pre"..i..")  &\n  "
   transcond = transcond .. "~(x in B"..i.." & x notin Pre"..i.." & x in Post"..i..") &\n  "
   transimpl = transimpl .. "(x+1 in A"..i.." <=> (x in A"..i.." & x notin Post"..i..")) &\n  "
-  for k=0, gamma do 
+  for k=0, gamma do
     transimpl = transimpl .. "(x+1 in B"..i.." & ( (x in B"..i.." & x notin Pre"..i..") | (x in Post"..k.." &  x notin A"..k.."))) &\n  "
   end
 end
@@ -149,6 +149,39 @@ transitions = transitions .. "       final("..B.."Mot) & initial("..AB..", Mot)\
 transitions = transitions .. "     )\n"
 transitions = transitions .. "  );"
 
+local system = "pred system(var2 AX)=\n"
+system = system .. "  ex2 "..prePost..", P, Mot:\n" 
+system = system .. "    P={1,4} &\n" 
+system = system .. "    Pre0={1,2,3,4,5} &\n" 
+system = system .. "    Post0 = {0,2,3} &\n" 
+system = system .. "    Pre1={3,5} &\n" 
+system = system .. "    Post1 = {0,3,4} &\n" 
+system = system .. "    Mot = {0,1,2,3,4,5} &\n" 
+system = system .. "    transitions("..prePost..",P,AX, Mot);\n" 
+
+
+
+
+system = "pred system(var2 AX)=\n"
+system = system .. "  ex2 "..prePost..", P, Mot:\n" 
+system = system .. "    P={1} &\n" 
+system = system .. "    Pre0={1} &\n" 
+system = system .. "    Post0 = {0} &\n" 
+system = system .. "    Pre1={2} &\n" 
+system = system .. "    Post1 = {0} &\n" 
+system = system .. "    Mot = {0,1,2} &\n" 
+system = system .. "    transitions("..prePost..",P,AX, Mot);\n" 
+
+
+system = "pred system(var2 AX)=\n"
+system = system .. "  ex2 "..prePost..", P, Mot:\n" 
+system = system .. "    P={3} &\n" 
+system = system .. "    Pre0={1,2,3,4,5,6} &\n" 
+system = system .. "    Post0 = {0,2,3} &\n" 
+system = system .. "    Mot = {0,1,2,3,4,5,6} &\n" 
+system = system .. "    transitions("..prePost..",P,AX, Mot);\n" 
+
+
 
 
 local declaration = "var2 AX; system(AX);"
@@ -163,10 +196,7 @@ texte = texte .. t4b ..  "\n\n"
 texte = texte .. final ..  "\n\n"
 texte = texte .. initial ..  "\n\n"
 texte = texte .. transitions ..  "\n\n"
-
-require "system"
-texte = texte .. system .."\n\n"
-
+texte = texte .. system ..  "\n\n"
 texte = texte .. declaration
 
 
