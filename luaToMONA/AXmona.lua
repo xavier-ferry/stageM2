@@ -58,7 +58,7 @@ local t3 = "pred t3 (var1 x, var2 " ..AB.. ", "..prePost..", P, AX, Mot) =\n"
 transimpl = ""
 transcond = "  "
 for i=0, gamma do
-  transcond = transcond .. "~(x in B"..i.." & x in Pre"..i..") & ~(x+1 in A"..i.." & x in Post"..i..") &\n  "
+  transcond = transcond .. "~(x+1 in A"..i.." & x in Post"..i..") &\n  "
   transcond = transcond .. "x in B"..i.." & x in Post"..i.."  &\n  "
   transimpl = transimpl .. "(x+1 in A"..i.." <=> (x in A"..i.." & x notin Post"..i..")) &\n  "
   transimpl = transimpl .. "(x+1 in B"..i.." <=> x in B"..i..") &\n  "
@@ -72,14 +72,27 @@ local t3b = "pred t3b (var1 x, var2 " ..AB.. ", "..prePost..", P, AX, Mot) =\n"
 transimpl = ""
 transcond = "  "
 for i=0, gamma do
-  transcond = transcond .. "~(x in B"..i.." & x in Pre"..i..") & ~(x+1 in A"..i.." & x in Post"..i..") &\n  "
+  transcond = transcond .. "~(x+1 in A"..i.." & x in Post"..i..") &\n  "
   transcond = transcond .. "~(x in B"..i.." & x in Post"..i..")  &\n  "
   transimpl = transimpl .. "(x+1 in A"..i.." <=> (x in A"..i.." & x notin Post"..i..")) &\n  "
-  for k=0, gamma do 
-    transimpl = transimpl .. "(x+1 in B"..i.." & ( x in B"..i.." | (x in Post"..k.." &  x+1 notin A"..k.."))) &\n  "
-  end
 end
-  transimpl = transimpl .. "x in P & x notin AX;\n"
+transimpl = transimpl .. "(\n"
+for i=0, gamma do
+  transimpl = transimpl .. "    (\n"
+ for k=0, gamma do 
+  if ( k == i ) then
+    transimpl = transimpl .. "      (x+1 in B"..i.." & x in Post"..i.." & x+1 notin A"..i..") &\n"
+  else
+    transimpl = transimpl .. "      (x+1 in B"..k.." <=> x in B"..i..") &\n"
+  end
+  end
+  transimpl = transimpl:sub(1, -4)
+  transimpl = transimpl .. "\n    )|\n"
+end
+
+  transimpl = transimpl:sub(1, -3)
+  transimpl = transimpl .. "\n  ) &\n "
+  transimpl = transimpl .. "  x in P & x notin AX;\n"
 
 t3b = t3b .. transcond .. transimpl
 
@@ -106,11 +119,24 @@ for i=0, gamma do
   transcond = transcond .. "~(x in A"..i.." & x in Pre"..i..")  &\n  "
   transcond = transcond .. "~(x in B"..i.." & x notin Pre"..i.." & x in Post"..i..") &\n  "
   transimpl = transimpl .. "(x+1 in A"..i.." <=> (x in A"..i.." & x notin Post"..i..")) &\n  "
-  for k=0, gamma do 
-    transimpl = transimpl .. "(x+1 in B"..i.." & ( (x in B"..i.." & x notin Pre"..i..") | (x in Post"..k.." &  x notin A"..k.."))) &\n  "
-  end
 end
-  transimpl = transimpl .. "x notin P & x notin AX;\n"
+transimpl = transimpl .. "(\n"
+for i=0, gamma do
+  transimpl = transimpl .. "    (\n"
+ for k=0, gamma do 
+  if ( k == i ) then
+    transimpl = transimpl .. "      (x+1 in B"..i.." & x in Post"..i.." & x notin A"..i..") &\n"
+  else
+    transimpl = transimpl .. "      (x+1 in B"..k.." <=> (x in B"..k.." & x notin Pre"..k..") ) &\n"
+  end
+  end
+  transimpl = transimpl:sub(1, -4)
+  transimpl = transimpl .. "\n    )|\n"
+end
+
+  transimpl = transimpl:sub(1, -3)
+  transimpl = transimpl .. "\n  ) &\n "
+  transimpl = transimpl .. "  x notin P & x notin AX;\n"
 
 t4b = t4b .. transcond .. transimpl
 
