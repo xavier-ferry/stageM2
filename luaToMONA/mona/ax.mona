@@ -82,27 +82,27 @@ pred t4b (var1 x, var2 A0, A1, B0, B1, Pre0, Pre1, Post0, Post1, P, AX, Mot) =
    x notin P & x notin AX;
 
 
-pred final (var2 B0, B1,  Mot) = 
-  all1 x : 
+pred final (var2 B0, B1,  Mot) =
+  all1 x :
     (x+1 in Mot => x in Mot) &
     (x in B0 => x in Mot) &
     (x in B1 => x in Mot) ;
 
-pred initial (var2 A0, A1, B0, B1, Mot) = 
+pred initial (var2 A0, A1, B0, B1, Mot) =
   0 in Mot => (0 notin A0 & 0 notin B0) &
   0 in Mot => (0 notin A1 & 0 notin B1) ;
 
-pred transitions (var2 Pre0, Pre1, Post0, Post1,P, AX, Mot )= 
+pred transitions (var2 Pre0, Pre1, Post0, Post1,P, AX, Mot )=
   ex2 A0, A1, B0, B1 :(
     (
       (all1 x :
         x in Mot => (
-          t1(x,A0, A1, B0, B1, Pre0, Pre1, Post0, Post1, P,AX,Mot) | 
-          t2(x,A0, A1, B0, B1, Pre0, Pre1, Post0, Post1, P,AX,Mot) | 
-          t3(x,A0, A1, B0, B1, Pre0, Pre1, Post0, Post1, P,AX,Mot) | 
-          t3b(x,A0, A1, B0, B1, Pre0, Pre1, Post0, Post1, P,AX,Mot) | 
-          t4(x,A0, A1, B0, B1, Pre0, Pre1, Post0, Post1, P,AX,Mot) | 
-          t4b(x,A0, A1, B0, B1, Pre0, Pre1, Post0, Post1, P,AX,Mot) 
+          t1(x,A0, A1, B0, B1, Pre0, Pre1, Post0, Post1, P,AX,Mot) |
+          t2(x,A0, A1, B0, B1, Pre0, Pre1, Post0, Post1, P,AX,Mot) |
+          t3(x,A0, A1, B0, B1, Pre0, Pre1, Post0, Post1, P,AX,Mot) |
+          t3b(x,A0, A1, B0, B1, Pre0, Pre1, Post0, Post1, P,AX,Mot) |
+          t4(x,A0, A1, B0, B1, Pre0, Pre1, Post0, Post1, P,AX,Mot) |
+          t4b(x,A0, A1, B0, B1, Pre0, Pre1, Post0, Post1, P,AX,Mot)
           )
        ) &
        final(B0, B1, Mot) & initial(A0, A1, B0, B1, Mot)

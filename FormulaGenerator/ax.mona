@@ -8,6 +8,7 @@ x in P & x in P & x in AX & x in AX & ((x in B1 & x in Post1)  <=> x in empty) &
 ;
 
 
+
 pred t2(var1 x, var2 A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P, AX, Mot)=
 ~(x in P) & ~(x in P) & x in AX & x in AX & ((x in A1 & x in Pre1)  <=> x in empty) &
 ((x in A2 & x in Pre2)  <=> x in empty) &
@@ -29,6 +30,7 @@ x in P & x in P & ~(x in AX) & ~(x in AX) & ~(((x in B1 & x in Post1)  <=> x in 
 ;
 
 
+
 pred t3b(var1 x, var2 A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P, AX, Mot)=
 x in P & x in P & ~(x in AX) & ~(x in AX) & ((x in B1 & x in Post1)  <=> x in empty) &
 ((x in B2 & x in Post2)  <=> x in empty) &
@@ -37,42 +39,32 @@ x in P & x in P & ~(x in AX) & ~(x in AX) & ((x in B1 & x in Post1)  <=> x in em
 (x+1 in A1 <=> (x in A1 & ~(x in Post1)) ) &
 (x+1 in A2 <=> (x in A2 & ~(x in Post2)) ) &
 ((x+1 in B1 & (x in Post1 & ~(x+1 in A1)) &
-(x+1 in B2  <=> x in B1 ))|
-((x+1 in B1  <=> x in B2 ) & x+1 in B2 & (x in Post2 & ~(x+1 in A2)) ))
+(x+1 in B2  <=> x in B1))|
+((x+1 in B1  <=> x in B2) & x+1 in B2 & (x in Post2 & ~(x+1 in A2)) ))
 ;
 
 
-pred t4 (var1 x, var2 A1, A2, B1, B2, Pre1, Pre2, Post1, Post2, P, AX, Mot) =
-  ~(x in A1 & x in Pre1)  &
-  (x in B1 & x notin Pre1 & x in Post1) &
-  ~(x in A2 & x in Pre2)  &
-  (x in B2 & x notin Pre2 & x in Post2) &
-  (x+1 in A1 <=> (x in A1 & x notin Post1)) &
-  (x+1 in B1 <=> (x in B1 & x notin Pre1)) &
-  (x+1 in A2 <=> (x in A2 & x notin Post2)) &
-  (x+1 in B2 <=> (x in B2 & x notin Pre2)) &
-  x notin P & x notin AX;
+pred t4(var1 x, var2 A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P, AX, Mot)=
+~(x in P) & ~(x in P) & ~(x in AX) & ~(x in AX) & ((x in A1 & x in Pre1)  <=> x in empty) &
+((x in A2 & x in Pre2)  <=> x in empty) &
+~((((x in B1 & ~(x in Pre1))  & x in Post1)  <=> x in empty) ) & ~((((x in B2 & ~(x in Pre2))  & x in Post2)  <=> x in empty) ) & (x+1 in A1 <=> (x in A1 & ~(x in Post1)) ) &
+(x+1 in A2 <=> (x in A2 & ~(x in Post2)) ) &
+(x+1 in B1 <=> (x in B1 & ~(x in Pre1)) ) &
+(x+1 in B2 <=> (x in B2 & ~(x in Pre2)) )
+;
 
 
-pred t4b (var1 x, var2 A1, A2, B1, B2, Pre1, Pre2, Post1, Post2, P, AX, Mot) =
-  ~(x in A1 & x in Pre1)  &
-  ~(x in B1 & x notin Pre1 & x in Post1) &
-  ~(x in A2 & x in Pre2)  &
-  ~(x in B2 & x notin Pre2 & x in Post2) &
-  (x+1 in A1 <=> (x in A1 & x notin Post1)) &
-  (x+1 in A2 <=> (x in A2 & x notin Post2)) &
-  (
-    (
-      (x+1 in B1 & x in Post1 & x notin A1) &
-      (x+1 in B2 <=> (x in B2 & x notin Pre2) )
-    )|
-    (
-      (x+1 in B1 <=> (x in B1 & x notin Pre1) ) &
-      (x+1 in B2 & x in Post2 & x notin A2)
-    )
-  ) &
-   x notin P & x notin AX;
-
+pred t4b(var1 x, var2 A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P, AX, Mot)=
+~(x in P) & ~(x in P) & ~(x in AX) & ~(x in AX) & ((x in A1 & x in Pre1)  <=> x in empty) &
+((x in A2 & x in Pre2)  <=> x in empty) &
+(((x in B1 & ~(x in Pre1))  & x in Post1)  <=> x in empty) &
+(((x in B2 & ~(x in Pre2))  & x in Post2)  <=> x in empty) &
+(x+1 in A1 <=> (x in A1 & ~(x in Post1)) ) &
+(x+1 in A2 <=> (x in A2 & ~(x in Post2)) ) &
+((x+1 in B1 & (x in Post1 & ~(x in A1)) &
+(x+1 in B2  <=> (x in B1 & ~(x in Pre1)) ))|
+((x+1 in B1  <=> (x in B2 & ~(x in Pre2)) ) & x+1 in B2 & (x in Post2 & ~(x in A2)) ))
+;
 
 pred final (var2 B1, B2,  Mot) =
   all1 x :
