@@ -10,7 +10,7 @@ pred initial(var2 A1, A2, B1, B2,Mot) =
 (0 in Mot => ((0 in A2|0 in B2)  <=> 0 in empty)) 
 ;
 
-pred t2(var1 x, var2 A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P, AX, Mot)=
+pred t2(var1 x, var2 A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P,AX,Mot)=
 ~(x in P) & ~(x in P) & x in AX & x in AX & ((x in A1 & x in Pre1)  <=> x in empty) & 
 ((x in A2 & x in Pre2)  <=> x in empty) & 
 ((x+1 in B1 & x in Post1)  <=> x in empty) & 
@@ -21,7 +21,7 @@ pred t2(var1 x, var2 A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P, AX, Mot)=
 (x+1 in B2 <=> (x in B2 & ~(x in Pre2)) ) 
 ;
 
-pred t4b(var1 x, var2 A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P, AX, Mot)=
+pred t4b(var1 x, var2 A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P,AX,Mot)=
 ~(x in P) & ~(x in P) & ~(x in AX) & ~(x in AX) & ((x in A1 & x in Pre1)  <=> x in empty) & 
 ((x in A2 & x in Pre2)  <=> x in empty) & 
 (((x in B1 & ~(x in Pre1))  & x in Post1)  <=> x in empty) & 
@@ -33,16 +33,14 @@ pred t4b(var1 x, var2 A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P, AX, Mot)=
 ((x+1 in B1  <=> (x in B2 & ~(x in Pre2)) ) & x+1 in B2 & (x in Post2 & ~(x in A2)) ))
 ;
 
-pred t3(var1 x, var2 A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P, AX, Mot)=
-x in P & x in P & ~(x in AX) & ~(x in AX) & ~(((x in B1 & x in Post1)  <=> x in empty) ) & ~(((x in B2 & x in Post2)  <=> x in empty) ) & ((x+1 in A1 & x in Post1)  <=> x in empty) & 
-((x+1 in A2 & x in Post2)  <=> x in empty) & 
-(x+1 in A1 <=> (x in A1 & ~(x in Post1)) ) & 
+pred t3(var1 x, var2 A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P,AX,Mot)=
+x in P & x in P & ~(x in AX) & ~(x in AX) & ~(((x in B1 & x in Post1)  <=> x in empty) ) & ~(((x in B2 & x in Post2)  <=> x in empty) ) & (x+1 in A1 <=> (x in A1 & ~(x in Post1)) ) & 
 (x+1 in A2 <=> (x in A2 & ~(x in Post2)) ) & 
 (x+1 in B1 <=> x in B1) & 
 (x+1 in B2 <=> x in B2) 
 ;
 
-pred t1(var1 x, var2 A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P, AX, Mot)=
+pred t1(var1 x, var2 A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P,AX,Mot)=
 x in P & x in P & x in AX & x in AX & ((x in B1 & x in Post1)  <=> x in empty) & 
 ((x in B2 & x in Post2)  <=> x in empty) & 
 (x+1 in A1 <=> (x in A1|x in Post1) ) & 
@@ -51,11 +49,9 @@ x in P & x in P & x in AX & x in AX & ((x in B1 & x in Post1)  <=> x in empty) &
 (x+1 in B2 <=> x in B2) 
 ;
 
-pred t3b(var1 x, var2 A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P, AX, Mot)=
+pred t3b(var1 x, var2 A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P,AX,Mot)=
 x in P & x in P & ~(x in AX) & ~(x in AX) & ((x in B1 & x in Post1)  <=> x in empty) & 
 ((x in B2 & x in Post2)  <=> x in empty) & 
-((x+1 in A1 & x in Post1)  <=> x in empty) & 
-((x+1 in A2 & x in Post2)  <=> x in empty) & 
 (x+1 in A1 <=> (x in A1 & ~(x in Post1)) ) & 
 (x+1 in A2 <=> (x in A2 & ~(x in Post2)) ) & 
 ((x+1 in B1 & (x in Post1 & ~(x+1 in A1)) & 
@@ -63,7 +59,7 @@ x in P & x in P & ~(x in AX) & ~(x in AX) & ((x in B1 & x in Post1)  <=> x in em
 ((x+1 in B1  <=> x in B2) & x+1 in B2 & (x in Post2 & ~(x+1 in A2)) ))
 ;
 
-pred t4(var1 x, var2 A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P, AX, Mot)=
+pred t4(var1 x, var2 A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P,AX,Mot)=
 ~(x in P) & ~(x in P) & ~(x in AX) & ~(x in AX) & ((x in A1 & x in Pre1)  <=> x in empty) & 
 ((x in A2 & x in Pre2)  <=> x in empty) & 
 ~((((x in B1 & ~(x in Pre1))  & x in Post1)  <=> x in empty) ) & ~((((x in B2 & ~(x in Pre2))  & x in Post2)  <=> x in empty) ) & (x+1 in A1 <=> (x in A1 & ~(x in Post1)) ) & 
@@ -76,12 +72,12 @@ pred transitions(var2 Pre1, Pre2, Post1, Post2,P,AX,Mot)=
 ex2 A1, A2, B1, B2 :((
 (all1 x :
 x in Mot => (
-t2(x,A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P, AX, Mot) |
-t4b(x,A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P, AX, Mot) |
-t3(x,A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P, AX, Mot) |
-t1(x,A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P, AX, Mot) |
-t3b(x,A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P, AX, Mot) |
-t4(x,A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P, AX, Mot) )) & 
+t2(x,A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P,AX,Mot) |
+t4b(x,A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P,AX,Mot) |
+t3(x,A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P,AX,Mot) |
+t1(x,A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P,AX,Mot) |
+t3b(x,A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P,AX,Mot) |
+t4(x,A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P,AX,Mot) )) & 
 final(B1, B2,Mot) & initial(A1, A2, B1, B2,Mot)))
 ;
 

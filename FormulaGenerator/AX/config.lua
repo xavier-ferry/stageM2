@@ -12,8 +12,6 @@ outputMONAFile = generatedFolder..'generated.mona'
 Set=require('Set')
 Prop=require('Prop')
 
---Automate AX
-
 gamma = 2
 P     = Set("P",1)
 AX    = Set('AX')
@@ -25,7 +23,7 @@ Pre   = Set('Pre')
 Post  = Set('Post')
 empty = Set()
 
-AX = {
+automate = {
     proprietes = {
         aVerifier = {
             "AX"
@@ -116,4 +114,3 @@ AX = {
     }
 }
 
-automate = AX
