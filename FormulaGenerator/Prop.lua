@@ -46,6 +46,7 @@ function Prop.set(a)
 end
 
 local function mytostring(a,res)
+--    print('mytostring',a.op, a.val1, a.val2, a.val3, a.val3.val1, a.val3.op, a.val3.val2)
     if (a.op == 'prop') then
         res[#res+1] = a.val
     elseif (a.op == 'egal') then

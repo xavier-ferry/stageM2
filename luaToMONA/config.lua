@@ -1,4 +1,4 @@
-gamma = 1
+gamma = 2
 gammaPomsetMonaFile = "mona/gammaPomset.mona"
 operateursMona = "mona/operateurs.mona"
 AXMona = "mona/ax.mona"

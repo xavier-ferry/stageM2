@@ -75,7 +75,7 @@ function exist(contrainte,option)
             res = res .. '('
             res = res .. lireContrainte(contrainte.val1,option)
             res = res:sub(1,-3)
-            option.indice = i
+--            option.indice = i
             res =  res .. " <=> " .. lireContrainte(contrainte.val2,option)
             res = res:sub(1,-4)
             res = res ..') & '
@@ -144,15 +144,18 @@ local function generateHeader(auto)
         return "pred initial(var2 "..declinerVariables("A","B").. ",Mot) =\n"
     elseif (auto == automate.final) then
         local res =  "pred final(var2 "..declinerVariables("B").. ",Mot) = \n "
-        res = res .. "  all1 x : \n     (x+1 in Mot => x in Mot) &\n"..
-                '(x in B1 => x in Mot) &\n'..
-                '(x in B2 => x in Mot) \n;\n'
+        res = res .. "  all1 x : \n     (x+1 in Mot => x in Mot) &\n"
+        for i = 1, gamma do
+            res = res .. '(x in B'..i..' => x in Mot) &\n'
+            end
+        res = res :sub(1,-4)
+        res = res .. '\n;\n'
         return res
     end
     for k,v in pairs(automate.transitions) do
         if (table.contains(v, auto)) then
-            return "pred "..k.."(var1 x, var2 "..declinerVariables("A","B","Pre","Post")..
-                    ","..props..','..aVerif..",Mot)=\n"
+            return "pred "..k.."(var1 x, var2 "..aVerif..','..props..','..declinerVariables("A","B","Pre","Post")..
+                    ",Mot)=\n"
         end
     end
 
@@ -185,34 +188,55 @@ local function lireAutomate(auto)
     addTexte(res)
 end
 
+local function conditions()
+    local res = 'pred conditions(var1 x, var2 '..declinerVariables('A','B','Pre','Post')..') =\n'
+    for i = 1, gamma do
+        res = res .. '~(x in A'..i..' & x in B'..i..') &\n'
+    end
+    res = res .. '(\n    '
+    for i = 1, gamma do
+            res = res .. '('
+        for j = 1, gamma  do
+            if j==i then
+                res = res .. ' x in Pre'..i..' &'
+            else
+                res = res .. ' x notin Pre'..j..' &'
+            end
+        end
+        res = res:sub(1,-3)
+        res = res .. ' ) |\n    '
+    end
+--    res = res:sub(1,-2)
+    res = res .. 'x notin ('
+    for i = 1,gamma do
+        res = res ..'Pre'..i..' union '
+    end
+    res =res:sub(1,-8)
+    res = res .. ')\n);\n\n'
+    addTexte(res)
+end
 local function choixTransition()
-    local res ='pred transitions(var2 '..declinerVariables('Pre','Post')..
-    ","..props..','..aVerif..',Mot)=\n'
+    local res ='pred transitions(var2 '..aVerif..','..props..','..declinerVariables('Pre','Post')
+            ..',Mot)=\n'
     res = res .. 'ex2 ' .. declinerVariables('A','B')..' :((\n'
             ..'(all1 x :\n'
-            ..'x in Mot => (\n'
+            ..'x in Mot => ( conditions(x,'..declinerVariables('A','B','Pre','Post')..') & (\n'
     for k,_ in pairs(automate.transitions) do
-        res = res ..k.."(x,"..declinerVariables("A","B","Pre","Post")..
-                ","..props..','..aVerif..",Mot) |\n"
+        res = res ..k.."(x,"..aVerif..','..props..','..declinerVariables("A","B","Pre","Post")..",Mot) |\n"
     end
     res = res:sub(1,-3)
-    res = res .. ')) & \n'
+    res = res .. '))) & \n'
         .. 'final('..declinerVariables('B')..',Mot) & initial('..
-            declinerVariables('A','B')..',Mot)))\n;\n\n'
+            declinerVariables('A','B')..',Mot)\n))\n;\n\n'
     addTexte(res)
 end
 
 local function system()
-    local res = 'pred system(var2 AX)=\n'..
-    'ex2 Pre1, Pre2, Post1, Post2, P, Mot:\n'..
-    'P={3,5} &\n'..
-    'Pre1={1,2,3,4,5} &\n'..
-    'Post1 = {0,2,3} &\n'..
-    'Pre2={3,5} &\n'..
-    'Post2 = {0,3,4} &\n'..
-    'Mot = {0,1,2,3,4,5} &\n'..
-    'transitions(Pre1, Pre2, Post1, Post2,P,AX, Mot);\n\n'..
-    'var2 AX; system(AX);'
+    local res = 'pred system(var2 '..aVerif..')=\n'..
+            'ex2 '..declinerVariables("Pre","Post")..','..props..', Mot:\n'..
+            'Mot = {0,1,2,3} &\n'..
+            'transitions('..aVerif..','..props..','..declinerVariables("Pre","Post")..', Mot);\n\n'..
+            'var2 '..aVerif..'; system('..aVerif..');'
     addTexte(res)
 end
 
@@ -222,7 +246,9 @@ local function generateMona()
     for _,v in pairs(automate.transitions) do
         lireAutomate(v.Conditions)
     end
+    conditions()
     choixTransition()
+    debug()
     system()
 end
 

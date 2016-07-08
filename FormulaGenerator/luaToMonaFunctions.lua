@@ -58,3 +58,13 @@ function declinerVariables(...)
     res = res:sub(1,-3)
     return res
 end
+
+function debug()
+    infile = io.open(outputMONAFile, "r")
+    instr = infile:read("*a")
+    infile:close()
+
+    outfile = io.open(outputDEBUGMONAfile, "w")
+    outfile:write(instr)
+    outfile:close()
+end

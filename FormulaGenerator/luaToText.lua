@@ -18,49 +18,50 @@ local function addTexte(txt)
 end
 
 local function decoup(foo)
-    local txt = ""
+    local res = ""
     for _, value in pairs(foo) do
-        txt = txt .. (tostring(value) .. " & ")
+        res = res .. (tostring(value) .. " & ")
     end
-
-    txt = txt:sub(1, -3) .. "\n"
-    addTexte(txt)
+    res = res:sub(1,-3)
+    return res
 end
 
 
+
+
 local function initial(auto)
-    addTexte("Initial:\n")
-    decoup(auto)
-    addTexte("\n")
+    local res = 'Initial:\n'
+    res = res .. decoup(auto) .. '\n'
+    return res
 end
 
 
 local function final(auto)
-    addTexte("Final:\n")
-    decoup(auto)
-    addTexte("\n")
+    local res = 'Final:\n'
+    res = res .. decoup(auto) .. '\n'
+    return res
 end
 
-local function trans(t)
-    decoup(t.Conditions)
-end
 
 
 local function transitions(automate)
-    addTexte("Transitions:\n")
+    local res = 'Transitions:\n'
     for i in pairs(automate.transitions) do
-        addTexte("\n"..i .. " :\n ")
-        trans(automate.transitions[i])
+        res = res ..'\n'..i .. ' :\n '
+        res = res .. decoup(automate.transitions[i].Conditions)
     end
-    addTexte("\n")
+    res = res .. '\n'
+    return res
 end
 
 
-local function decomp(automate)
-    initial(automate.initial)
-    final(automate.final)
-    transitions(automate)
+local function automateToString(automate)
+    local res = ''
+    res = res .. initial(automate.initial)
+            .. final(automate.final)
+            .. transitions(automate)
+    addTexte(res)
 end
 
 
-decomp(automate)
+automateToString(automate)

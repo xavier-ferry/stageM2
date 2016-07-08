@@ -1,0 +1,108 @@
+include "../operateurs.mona";
+
+
+
+pred final(var2 B1, B2,Mot) =
+   all1 x :
+     (x+1 in Mot => x in Mot) &
+(x in B1 => x in Mot) &
+(x in B2 => x in Mot)
+;
+
+pred initial(var2 A1, A2, B1, B2,Mot) =
+(0 in Mot => ((0 in A1|0 in B1)  <=> 0 in empty)) &
+(0 in Mot => ((0 in A2|0 in B2)  <=> 0 in empty))
+;
+
+pred t2(var1 x, var2 A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P,AX,Mot)=
+~(x in P) & ~(x in P) & x in AX & x in AX & ((x in A1 & x in Pre1)  <=> x in empty) &
+((x in A2 & x in Pre2)  <=> x in empty) &
+((x+1 in B1 & x in Post1)  <=> x in empty) &
+((x+1 in B2 & x in Post2)  <=> x in empty) &
+(x+1 in A1 <=> (x in A1|x in Post1) ) &
+(x+1 in A2 <=> (x in A2|x in Post2) ) &
+(x+1 in B1 <=> (x in B1 & ~(x in Pre1)) ) &
+(x+1 in B2 <=> (x in B2 & ~(x in Pre2)) )
+;
+
+pred t3(var1 x, var2 A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P,AX,Mot)=
+x in P & x in P & ~(x in AX) & ~(x in AX) & ~(((x in B1 & x in Post1)  <=> x in empty) ) & ~(((x in B2 & x in Post2)  <=> x in empty) ) & (x+1 in A1 <=> (x in A1 & ~(x in Post1)) ) &
+(x+1 in A2 <=> (x in A2 & ~(x in Post2)) ) &
+(x+1 in B1 <=> x in B1) &
+(x+1 in B2 <=> x in B2)
+;
+
+pred t1(var1 x, var2 A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P,AX,Mot)=
+x in P & x in P & x in AX & x in AX & ((x in B1 & x in Post1)  <=> x in empty) &
+((x in B2 & x in Post2)  <=> x in empty) &
+(x+1 in A1 <=> (x in A1|x in Post1) ) &
+(x+1 in A2 <=> (x in A2|x in Post2) ) &
+(x+1 in B1 <=> x in B1) &
+(x+1 in B2 <=> x in B2)
+;
+
+pred t3b(var1 x, var2 A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P,AX,Mot)=
+x in P & x in P & ~(x in AX) & ~(x in AX) & ((x in B1 & x in Post1)  <=> x in empty) &
+((x in B2 & x in Post2)  <=> x in empty) &
+(x+1 in A1 <=> (x in A1 & ~(x in Post1)) ) &
+(x+1 in A2 <=> (x in A2 & ~(x in Post2)) ) &
+((x+1 in B1 & (x in Post1 & ~(x+1 in A1)) &
+(x+1 in B2  <=> x in B2))|
+((x+1 in B1  <=> x in B1) & x+1 in B2 & (x in Post2 & ~(x+1 in A2)) ))
+;
+
+pred t4(var1 x, var2 A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P,AX,Mot)=
+~(x in P) & ~(x in P) & ~(x in AX) & ~(x in AX) & ((x in A1 & x in Pre1)  <=> x in empty) &
+((x in A2 & x in Pre2)  <=> x in empty) &
+(((x in B1 & ~(x in Pre1))  & x in Post1)  <=> x in empty) &
+(((x in B2 & ~(x in Pre2))  & x in Post2)  <=> x in empty) &
+(x+1 in A1 <=> (x in A1 & ~(x in Post1)) ) &
+(x+1 in A2 <=> (x in A2 & ~(x in Post2)) ) &
+((x+1 in B1 & x in Post1 & (x+1 in B2  <=> (x in B2 & ~(x in Pre2)) ))|
+((x+1 in B1  <=> (x in B1 & ~(x in Pre1)) ) & x+1 in B2 & x in Post2))
+;
+
+pred transitions(var2 Pre1, Pre2, Post1, Post2,P,AX,Mot)=
+ex2 A1, A2, B1, B2 :((
+(all1 x :
+x in Mot => (
+t2(x,A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P,AX,Mot) |
+t3(x,A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P,AX,Mot) |
+t1(x,A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P,AX,Mot) |
+t3b(x,A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P,AX,Mot) |
+t4(x,A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P,AX,Mot) )) &
+final(B1, B2,Mot) & initial(A1, A2, B1, B2,Mot)))
+;
+
+      pred transitionsTEST(var2 Pre1, Pre2, Post1, Post2,P,AX,Mot,A1, A2, B1, B2 )=
+      #ex2 :((
+      (all1 x :
+      x in Mot => (
+      t2(x,A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P,AX,Mot) |
+      t4(x,A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P,AX,Mot) |
+      t3(x,A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P,AX,Mot) |
+      t1(x,A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P,AX,Mot) |
+      t3b(x,A1, A2, B1, B2, Pre1, Pre2, Post1, Post2,P,AX,Mot) )) &
+      final(B1, B2,Mot) & initial(A1, A2, B1, B2,Mot)
+      #))
+      ;
+
+
+  pred system(var2 AX,Pre1,Pre2, Post1,Post2, P, Mot)=
+  ~(transitions(Pre1, Pre2, Post1, Post2,P,AX,Mot) <=> AXP(AX,P,Pre1,Pre2,Post1,Post2,Mot));
+
+
+var2 AX,P,Pre1,Pre2, Post1,Post2, A1, A2, B1, B2 , Mot;
+P = {};
+Pre1 = {2};
+Pre2 = {};
+Post1 = {0,1};
+Post2 = {0};
+Mot = {0,1,2};
+
+system(AX,Pre1,Pre2,Post1,Post2, P, Mot);
+#AXP(AX,P,Pre1,Pre2,Post1,Post2,Mot);
+#transitions(Pre1,Pre2, Post1,Post2,P,AX, Mot);
+
+
+#transitionsTEST(Pre1,Pre2, Post1,Post2,P,AX, Mot,A1, A2, B1, B2 );

@@ -1,0 +1,51 @@
+pred final(var2 B1,Mot) =
+   all1 x :
+     (x+1 in Mot => x in Mot) &
+(x in B1 => x in Mot)
+;
+
+pred initial(var2 A1, B1,Mot) =
+(0 in Mot => ((0 in A1|0 in B1)  <=> 0 in empty))
+;
+
+pred t2(var1 x, var2 A1, B1, Pre1, Post1,P,Q,EPUQ,Mot)=
+x in P & ~(x in Q) & ~(x in EPUQ) & ((x in A1 & x in Post1)  <=> x in empty) &
+(x+1 in A1 <=> x in A1) &
+(x+1 in B1 <=> (x in B1|x in Post1) )
+;
+
+pred t3(var1 x, var2 A1, B1, Pre1, Post1,P,Q,EPUQ,Mot)=
+x in Q & x in EPUQ & ((x+1 in A1 & x in Post1)  <=> x in empty) &
+((x in B1 & x in Pre1)  <=> x in empty) &
+(x+1 in A1 <=> (x in A1 & ~(x in Pre1)) ) &
+(x+1 in B1 <=> (x in B1 & ~(x in Post1)) )
+;
+
+pred t1(var1 x, var2 A1, B1, Pre1, Post1,P,Q,EPUQ,Mot)=
+~(x in P) & ~(x in Q) & ~(x in EPUQ) & ((x in A1 & x in Post1)  <=> x in empty) &
+(x+1 in A1 <=> x in A1) &
+(x+1 in B1 <=> ((x in B1 & ~(x in Pre1))  & ~(x in Post1)) )
+;
+
+pred transitions(var2 A1, B1,Pre1, Post1,P,Q,EPUQ,Mot)=
+#ex2 A1, B1 :((
+(all1 x :
+x in Mot => (
+t2(x,A1, B1, Pre1, Post1,P,Q,EPUQ,Mot) |
+t3(x,A1, B1, Pre1, Post1,P,Q,EPUQ,Mot) |
+t1(x,A1, B1, Pre1, Post1,P,Q,EPUQ,Mot) )) &
+final(B1,Mot) &
+initial(A1, B1,Mot)
+#))
+;
+
+pred system(var2 RES, Mot,A1, B1)=
+ex2 Pre1, Post1, P,Q:
+P={0,1,2} &
+Q={} &
+Pre1={1,2,3} &
+Post1 = {0,1,2} &
+Mot = {0,1,2,3} &
+transitions(A1, B1,Pre1, Post1,P,Q,RES, Mot);
+
+var2 RES, A1, B1,Mot; system(RES, Mot,A1, B1);

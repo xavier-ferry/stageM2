@@ -1,21 +1,21 @@
 include "gammaPomset.mona";
 
-pred EXP( var2 RES, P,Pre0, Post0, Mot) =
-all1 x : ((x in RES) <=> ( ex1 y: y in P & successeurImmediat(x,y,Pre0, Post0, Mot)));
+pred EXP( var2 RES, P,Pre1, Pre2, Post1, Post2, Mot) =
+all1 x : ((x in RES) <=> ( ex1 y: y in P & successeurImmediat(x,y,Pre1, Pre2, Post1, Post2, Mot)));
 
 
-pred AXP( var2 RES, P,Pre0, Post0, Mot)=
-  EXP(Mot\RES, Mot\P,Pre0, Post0,Mot);
+pred AXP( var2 RES, P,Pre1, Pre2, Post1, Post2, Mot)=
+  EXP(Mot\RES, Mot\P,Pre1, Pre2, Post1, Post2,Mot);
 
 
- pred pEUq ( var2 RES, P, Q, Pre0, Post0, Mot)= 
-  all1 x : ( x in Q => x in RES  & all1 y,z : (successeurImmediat(y,z,Pre0, Post0, Mot) & y in P & z in RES) => y in RES);
+ pred pEUq ( var2 RES, P, Q, Pre1, Pre2, Post1, Post2, Mot)= 
+  all1 x : ( x in Q => x in RES  & all1 y,z : (successeurImmediat(y,z,Pre1, Pre2, Post1, Post2, Mot) & y in P & z in RES) => y in RES);
 
 
-pred pAUq ( var2 RES, P, Q, Pre0, Post0, Mot)=
-  all1 x : x in RES <=> ( x in Q |( x in P & all1 z : ~(successeurImmediat(x,z,Pre0, Post0, Mot)) | (successeurImmediat(x,z,Pre0, Post0, Mot) & z in RES))); 
+pred pAUq ( var2 RES, P, Q, Pre1, Pre2, Post1, Post2, Mot)=
+  all1 x : x in RES <=> ( x in Q |( x in P & all1 z : ~(successeurImmediat(x,z,Pre1, Pre2, Post1, Post2, Mot)) | (successeurImmediat(x,z,Pre1, Pre2, Post1, Post2, Mot) & z in RES))); 
 
 
-pred pGUq(var2 RES,P,Q,Pre0, Post0, Mot) = 
-  all1 x : x in RES <=> ( x in Q | ( x in P & ex1 z: (z in Q & z>x &  partialOrder(x,z,Pre0, Post0,Mot)) & (all1 y: ( y>x & y<z & partialOrder(x,y,Pre0, Post0,Mot) & partialOrder(y,z,Pre0, Post0,Mot)) => y in P)));
+pred pGUq(var2 RES,P,Q,Pre1, Pre2, Post1, Post2, Mot) = 
+  all1 x : x in RES <=> ( x in Q | ( x in P & ex1 z: (z in Q & z>x &  partialOrder(x,z,Pre1, Pre2, Post1, Post2,Mot)) & (all1 y: ( y>x & y<z & partialOrder(x,y,Pre1, Pre2, Post1, Post2,Mot) & partialOrder(y,z,Pre1, Pre2, Post1, Post2,Mot)) => y in P)));
 

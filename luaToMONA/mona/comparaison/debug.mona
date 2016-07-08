@@ -80,9 +80,3 @@ final(B1, B2,Mot) & initial(A1, A2, B1, B2,Mot)
 ))
 ;
 
-pred system(var2 AX)=
-ex2 Pre1, Pre2, Post1, Post2,P, Mot:
-Mot = {0,1,2,3} &
-transitions(AX,P,Pre1, Pre2, Post1, Post2, Mot);
-
-var2 AX; system(AX);

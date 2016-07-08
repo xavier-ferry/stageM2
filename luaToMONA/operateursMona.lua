@@ -1,5 +1,6 @@
 require "config"
 
+function writeOperateursMona()
 file = io.open(operateursMona, "w")
 io.output(file) 
 
@@ -9,7 +10,7 @@ local prePost = ""
 
 local pre = ""
 local post = ""
-for i=0, gamma do
+for i=1, gamma do
   pre = pre .. "Pre" ..i .. ", "
   post = post .. "Post" ..i .. ", "
 end
@@ -38,3 +39,4 @@ pGUq = pGUq .. " & (all1 y: ( y>x & y<z & partialOrder(x,y,"..prePost..",Mot) & 
 local texte = EXP .. "\n\n" .. AXP .. "\n\n" .. pEUq .. "\n\n" .. pAUq .. "\n\n" .. pGUq .. "\n"
 io.write(texte)
 io.close(file)
+end

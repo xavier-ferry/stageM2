@@ -1,5 +1,6 @@
 require "config"
 
+function writeGammaPomset()
 file = io.open(gammaPomsetMonaFile, "w")
 io.output(file) 
 
@@ -8,7 +9,7 @@ local prePost = ""
 
 local pre = ""
 local post = ""
-for i=0, gamma do
+for i=1, gamma do
   pre = pre .. "Pre" ..i .. ", "
   post = post .. "Post" ..i .. ", "
 end
@@ -19,7 +20,7 @@ prePost = prePost:sub(1, -3)
 local relationGPomset = '#Traduction de la relation de successeurImmediat sur les gamma-pomset \n'
 relationGPomset = relationGPomset .. 'pred relationGPomset(var1 x,y, var2 ' .. prePost ..', Mot) = \n'
 relationGPomset = relationGPomset .. '  x < y & \n  (\n'
-for i=0, gamma do
+for i=1, gamma do
   relationGPomset = relationGPomset .. '   ( x in Post' ..i.. ' & y in Pre'..i..' & (all1 z:(z>x & z<y) => z notin Post'..i..')) |\n'
 end
 relationGPomset = relationGPomset:sub(1, -3) 
@@ -46,3 +47,4 @@ successeurImmediat = successeurImmediat .. "  );\n"
 local texte = relationGPomset .. "\n\n" .. partialOrder .. "\n\n" .. successeurImmediat
 io.write(texte)
 io.close(file)
+end

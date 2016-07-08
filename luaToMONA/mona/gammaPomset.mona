@@ -1,23 +1,24 @@
 #Traduction de la relation de successeurImmediat sur les gamma-pomset 
-pred relationGPomset(var1 x,y, var2 Pre0, Post0, Mot) = 
+pred relationGPomset(var1 x,y, var2 Pre1, Pre2, Post1, Post2, Mot) = 
   x < y & 
   (
-   ( x in Post0 & y in Pre0 & (all1 z:(z>x & z<y) => z notin Post0)) 
+   ( x in Post1 & y in Pre1 & (all1 z:(z>x & z<y) => z notin Post1)) |
+   ( x in Post2 & y in Pre2 & (all1 z:(z>x & z<y) => z notin Post2)) 
  );
 
 
 #Traduction de la relation d'ordre partiel 
- pred partialOrder(var1 x, y, var2 Pre0, Post0, Mot) =
+ pred partialOrder(var1 x, y, var2 Pre1, Pre2, Post1, Post2, Mot) =
    all2 X: ( (x in X & 
-             (all1 u,v: (relationGPomset(u,v,Pre0, Post0, Mot) & u in X)
+             (all1 u,v: (relationGPomset(u,v,Pre1, Pre2, Post1, Post2, Mot) & u in X)
              => v in X)) => y in X);
 
 
 #Traduction de la relation de causalité sur les Pomsets
- pred successeurImmediat(var1 x, y, var2 Pre0, Post0 , Mot) =
+ pred successeurImmediat(var1 x, y, var2 Pre1, Pre2, Post1, Post2 , Mot) =
   x ~= y &
-  partialOrder(x,y,Pre0, Post0,Mot) & ~(ex1 z: z~=x & z~=y &
-      (partialOrder(x,z,Pre0, Post0,Mot) &
-        partialOrder(z,y,Pre0, Post0,Mot)
+  partialOrder(x,y,Pre1, Pre2, Post1, Post2,Mot) & ~(ex1 z: z~=x & z~=y &
+      (partialOrder(x,z,Pre1, Pre2, Post1, Post2,Mot) &
+        partialOrder(z,y,Pre1, Pre2, Post1, Post2,Mot)
       )
   );

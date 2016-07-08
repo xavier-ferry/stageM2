@@ -5,14 +5,6 @@
 -- Time: 17:27
 -- To change this template use File | Settings | File Templates.
 --
-generatedFolder = 'generated/'
-outputTXTFile = generatedFolder..'generated.txt'
-outputMONAFile = generatedFolder..'generated.mona'
-
-Set=require('Set')
-Prop=require('Prop')
-
-gamma = 2
 P     = Set("P",1)
 AX    = Set('AX')
 A     = Set('A')
@@ -94,23 +86,11 @@ automate = {
                 Set.non(P),
                 Set.non(AX),
                 Set.egal(A*Pre,empty),
-                Set.non(Set.egal((B-Pre)*Post,empty)),
-
-                Set.egal(A_, A-Post),
-                Set.egal(B_, B-Pre)
-            }
-        },
-        t4b = {
-            Conditions = {
-                Set.non(P),
-                Set.non(AX),
-                Set.egal(A*Pre,empty),
                 Set.egal((B-Pre)*Post,empty),
 
                 Set.egal(A_, A-Post),
-                Set.affectUnion(B_,B-Pre,Post-A)
+                Set.affectUnion(B_,B-Pre,Post)
             }
         }
     }
 }
-

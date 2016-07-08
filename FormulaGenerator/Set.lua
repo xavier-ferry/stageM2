@@ -77,6 +77,12 @@ local function mytostring(a,res)
         res[#res+1] = a
     elseif (a.op == 'set') then
         res[#res+1] = a.val
+    elseif (a.op == '+') then
+        res[#res+1] = '(' .. tostring(a.val1) .. '+' .. tostring(a.val2) .. ')'
+    elseif (a.op == '-') then
+        res[#res+1] = '(' .. tostring(a.val1) .. '-' .. tostring(a.val2) .. ')'
+    elseif (a.op == '*') then
+        res[#res+1] = '(' .. tostring(a.val1) .. '*' .. tostring(a.val2) .. ')'
     else
         res[#res+1] = '('
         mytostring(a.val1,res)

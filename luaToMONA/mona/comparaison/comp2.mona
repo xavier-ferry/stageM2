@@ -1,0 +1,15 @@
+include "../operateurs.mona";
+include "debug.mona";
+
+
+pred systemComp(var2 AX,Pre1,Pre2,Post1,Post2,P, Mot)=
+~(transitions(AX,P,Pre1, Pre2, Post1, Post2,Mot) <=> AXP(AX,P,Pre1,Pre2,Post1,Post2,Mot));
+
+var2 AX,P,Pre1,Pre2, Post1,Post2,Mot;
+P = {1};
+Pre1 = {2};
+Pre2 = {1,2};
+Post1 = {1};
+Post2 = {0};
+Mot = {0,1,2};
+systemComp(AX,Pre1,Pre2, Post1,Post2, P, Mot);
