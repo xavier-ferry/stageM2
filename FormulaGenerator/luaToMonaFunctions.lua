@@ -59,7 +59,7 @@ function declinerVariables(...)
     return res
 end
 
-function debug()
+function debug(automate)
     infile = io.open(outputMONAFile, "r")
     instr = infile:read("*a")
     infile:close()
@@ -67,4 +67,28 @@ function debug()
     outfile = io.open(outputDEBUGMONAfile, "w")
     outfile:write(instr)
     outfile:close()
+
+    local fileComp = io.open(outputCOMPMONAfile, "w")
+    props = tostring(automate.proprietes.props[1])..','
+    if (automate.proprietes.props[2] ~= nil ) then
+        props = props .. tostring(automate.proprietes.props[2])..','
+    end
+    props = props:sub(1,-2)
+    res = ' include "../operateurs.mona";\n'..
+            'include "debug.mona";\n\n'..
+            'pred systemComp(var2 '..automate.proprietes.aVerifier[1]..','..props..','..declinerVariables('Pre','Post')..',Mot) =\n' ..
+            '~(preUnique('..declinerVariables('Pre')..',Mot) => (transitions('..automate.proprietes.aVerifier[1]..','..props..
+            ','..declinerVariables('Pre','Post')..',Mot) <=> '..automate.proprietes.aVerifier[1]..'P('..automate.proprietes.aVerifier[1]..','..
+            props..','..declinerVariables('Pre','Post')..',Mot)))\n;\n\n'
+
+
+    res = res .. 'pred systemCompTEST(var2 '..automate.proprietes.aVerifier[1]..','..props..','..declinerVariables('Pre','Post')..',Mot) =\n'..
+            'transitions('..automate.proprietes.aVerifier[1]..','..props.. ','..declinerVariables('Pre','Post')..',Mot)\n;\n\n'
+
+
+    res = res .. 'var2 '..automate.proprietes.aVerifier[1]..', '..props..', '.. declinerVariables('Pre','Post')..', Mot;\n'..
+            '#Mot = {0,1,2};\n'..
+            'systemComp('..automate.proprietes.aVerifier[1]..', '..props..', '.. declinerVariables('Pre','Post')..', Mot);\n'
+    fileComp:write(res)
+    fileComp:close()
 end

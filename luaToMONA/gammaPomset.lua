@@ -17,6 +17,28 @@ end
 prePost = pre .. post
 prePost = prePost:sub(1, -3) 
 
+local preUnique = 'pred preUnique(var2 '..pre..' Mot)=\n all1 x : x in Mot => \n(   \n'
+for i = 1, gamma do
+            preUnique = preUnique .. '('
+        for j = 1, gamma  do
+            if j==i then
+                preUnique = preUnique .. ' x in Pre'..i..' &'
+            else
+                preUnique = preUnique .. ' x notin Pre'..j..' &'
+            end
+        end
+        preUnique = preUnique:sub(1,-3)
+        preUnique = preUnique .. ' ) |\n    '
+    end
+--    preUnique = preUnique:sub(1,-2)
+    preUnique = preUnique .. 'x notin ('
+    for i = 1,gamma do
+        preUnique = preUnique ..'Pre'..i..' union '
+    end
+    preUnique =preUnique:sub(1,-8)
+    preUnique = preUnique .. ')\n);\n\n'
+
+
 local relationGPomset = '#Traduction de la relation de successeurImmediat sur les gamma-pomset \n'
 relationGPomset = relationGPomset .. 'pred relationGPomset(var1 x,y, var2 ' .. prePost ..', Mot) = \n'
 relationGPomset = relationGPomset .. '  x < y & \n  (\n'
@@ -44,7 +66,7 @@ successeurImmediat = successeurImmediat .. "      )\n"
 successeurImmediat = successeurImmediat .. "  );\n"
 
 
-local texte = relationGPomset .. "\n\n" .. partialOrder .. "\n\n" .. successeurImmediat
+local texte = preUnique .. "\n\n" .. relationGPomset .. '\n\n' .. partialOrder .. "\n\n" .. successeurImmediat
 io.write(texte)
 io.close(file)
 end

@@ -88,6 +88,7 @@ function exist(contrainte,option)
         res = res:sub(1,-4)
         res = res .. ') &\n'
     end
+    option.indice = nil
     --    res = res:sub(1,-4)
     return res
 end
@@ -143,10 +144,10 @@ local function generateHeader(auto)
     if (auto == automate.initial) then
         return "pred initial(var2 "..declinerVariables("A","B").. ",Mot) =\n"
     elseif (auto == automate.final) then
-        local res =  "pred final(var2 "..declinerVariables("B").. ",Mot) = \n "
+        local res =  "pred final(var2 "..declinerVariables(tostring(automate.final[1])).. ",Mot) = \n "
         res = res .. "  all1 x : \n     (x+1 in Mot => x in Mot) &\n"
         for i = 1, gamma do
-            res = res .. '(x in B'..i..' => x in Mot) &\n'
+            res = res .. '(x in '..automate.final[1]..i..' => x in Mot) &\n'
             end
         res = res :sub(1,-4)
         res = res .. '\n;\n'
@@ -177,15 +178,21 @@ local function lireAutomate(auto)
 
     local res = ""
     res = res .. generateHeader(auto)
-    for _,v in pairs(auto) do
+    if ( auto == automate.final) then
+        res = res .. '\n'
+        addTexte(res)
+    else
+        for _,v in pairs(auto) do
         for i = 1, gamma do
             option.i = i
             res = res .. lireContrainte(v,option)
         end
+        end
+        res = res:sub(1,-4) .. "\n;\n\n"
+        res = replacePrime(res)
+        addTexte(res)
     end
-    res = res:sub(1,-4) .. "\n;\n\n"
-    res = replacePrime(res)
-    addTexte(res)
+
 end
 
 local function conditions()
@@ -225,11 +232,28 @@ local function choixTransition()
         res = res ..k.."(x,"..aVerif..','..props..','..declinerVariables("A","B","Pre","Post")..",Mot) |\n"
     end
     res = res:sub(1,-3)
-    res = res .. '))) & \n'
-        .. 'final('..declinerVariables('B')..',Mot) & initial('..
+    res = res .. ')\n)) & \n'
+            .. 'final('..declinerVariables(automate.final[1])..',Mot) & initial('..
             declinerVariables('A','B')..',Mot)\n))\n;\n\n'
     addTexte(res)
 end
+
+
+local function DEBUGchoixTransition()
+    local res ='pred transitionsAB(var2 '..aVerif..','..props..','..declinerVariables('Pre','Post','A','B')
+            ..',Mot)=\n'
+    res = res ..'(all1 x :\n'
+            ..'x in Mot => ( conditions(x,'..declinerVariables('A','B','Pre','Post')..') & (\n'
+    for k,_ in pairs(automate.transitions) do
+        res = res ..k.."(x,"..aVerif..','..props..','..declinerVariables("A","B","Pre","Post")..",Mot) |\n"
+    end
+    res = res:sub(1,-3)
+    res = res .. ')\n)) & \n'
+            .. 'final('..declinerVariables(automate.final[1])..',Mot) & initial('..
+            declinerVariables('A','B')..',Mot)\n;\n\n'
+    addTexte(res)
+end
+
 
 local function system()
     local res = 'pred system(var2 '..aVerif..')=\n'..
@@ -248,9 +272,16 @@ local function generateMona()
     end
     conditions()
     choixTransition()
-    debug()
+
+    if debugON == true  then
+        print("Debug activé ?",debugON)
+        DEBUGchoixTransition()
+        debug(automate)
+    end
+
     system()
 end
 
 
 generateMona()
+io.close()

@@ -6,7 +6,7 @@
 -- To change this template use File | Settings | File Templates.
 --
 P     = Set("P",1)
-AX    = Set('AX')
+EX    = Set('EX')
 A     = Set('A')
 A_    = Set("A\'")
 B     = Set('B')
@@ -18,16 +18,16 @@ empty = Set()
 automate = {
     proprietes = {
         aVerifier = {
-            "AX"
+            "EX"
         },
         props = {
             "P"
         },
         nePasDecliner = {
-          P, AX, empty
+          P, EX, empty
         },
         label = {
-            P,AX,Pre,Post
+            P,EX,Pre,Post
         },
         state = {
             A,B
@@ -37,59 +37,47 @@ automate = {
         Set.egal(A+B,empty)
     },
     final = {
-        'B'
+        'A'
     },
     transitions = {
         t1 = {
             Conditions = {
                 P,
-                AX,
-                Set.egal(B*Post,empty),
+                EX,
+                Set.egal(B*Pre,empty),
 
-                Set.egal(A_,A+Post),
+                Set.affectUnion(A_,A-Pre,Post),
                 Set.egal(B_,B)
             }
         },
         t2 = {
             Conditions = {
                 Set.non(P),
-                AX,
+                EX,
                 Set.egal(A*Pre,empty),
-                Set.egal(B_*Post,empty),
 
-                Set.egal(A_, A+Post),
+                Set.affectUnion(A_, A,Post-B_),
                 Set.egal(B_, B-Pre)
             }
         },
         t3 = {
             Conditions = {
                 P,
-                Set.non(AX),
-                Set.non(Set.egal(B*Post,empty)),
+                Set.non(EX),
+                Set.egal(B*Pre,empty),
 
-                Set.egal(A_, A-Post),
-                Set.egal(B_, B)
-            }
-        },
-        t3b = {
-            Conditions = {
-                P,
-                Set.non(AX),
-                Set.egal(B*Post,empty),
-
-                Set.egal(A_, A-Post),
-                Set.affectUnion(B_,B,Post-A_)
+                Set.egal(A_, A-Pre),
+                Set.egal(B_, B+Post)
             }
         },
         t4 = {
             Conditions = {
                 Set.non(P),
-                Set.non(AX),
+                Set.non(EX),
                 Set.egal(A*Pre,empty),
-                Set.egal((B-Pre)*Post,empty),
 
-                Set.egal(A_, A-Post),
-                Set.affectUnion(B_,B-Pre,Post)
+                Set.egal(A_, A),
+                Set.egal(B_,B-Pre+Post)
             }
         }
     }

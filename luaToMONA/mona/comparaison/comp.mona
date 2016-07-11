@@ -1,54 +1,42 @@
 include "../operateurs.mona";
 include "debug.mona";
 
+pred finMot(var2 P, Mot) =
+ all1 x : x notin Mot => x notin P;
 
-# -------- TEST
 
-pred transitionsTEST(var2 AX,P,Pre1, Pre2, Pre3, Post1, Post2, Post3,A1, A2, A3, B1, B2, B3 ,Mot)=
-#ex2 A1, A2, A3, B1, B2, B3 :((
-(all1 x :
-x in Mot => (
-t2(x,AX,P,A1, A2, A3, B1, B2, B3, Pre1, Pre2, Pre3, Post1, Post2, Post3,Mot) |
-t3(x,AX,P,A1, A2, A3, B1, B2, B3, Pre1, Pre2, Pre3, Post1, Post2, Post3,Mot) |
-t1(x,AX,P,A1, A2, A3, B1, B2, B3, Pre1, Pre2, Pre3, Post1, Post2, Post3,Mot) |
-t3b(x,AX,P,A1, A2, A3, B1, B2, B3, Pre1, Pre2, Pre3, Post1, Post2, Post3,Mot) |
-t4(x,AX,P,A1, A2, A3, B1, B2, B3, Pre1, Pre2, Pre3, Post1, Post2, Post3,Mot) )) &
-final(B1, B2, B3,Mot) & initial(A1, A2, A3, B1, B2, B3,Mot)
-#))
+ pred fin( var2 EX,P,Pre1,Pre2, Post1, Post2, Mot)=
+ finMot(EX union P union Pre1 union Pre2 union Post1 union Post2, Mot);
+
+
+pred comparaison(var2 EX,P,Pre1, Pre2, Post1, Post2,Mot) =
+preUnique(Pre1, Pre2,Mot) & fin(EX,P,Pre1,Pre2, Post1, Post2, Mot) & ~((transitions(EX,P,Pre1, Pre2, Post1, Post2,Mot) <=> EXP(EX,P,Pre1, Pre2, Post1, Post2,Mot)))
 ;
 
-pred systemCompTEST(var2 AX,Pre1,Pre2,Pre3,Post1,Post2,Post3,P,A1, A2, A3, B1, B2, B3 , Mot)=
-~(transitionsTEST(AX,P,Pre1, Pre2,Pre3, Post1, Post2,Post3,A1, A2, A3, B1, B2, B3 ,Mot) <=> AXP(AX,P,Pre1,Pre2,Pre3,Post1,Post2,Post3,Mot));
 
+pred comparaisonTEST(var2 EX,P,Pre1, Pre2, Post1, Post2,Mot) =
+ fin(EX,P,Pre1,Pre2, Post1, Post2, Mot) & transitions(EX,P,Pre1, Pre2, Post1, Post2,Mot)
 
+ #preUnique(Pre1, Pre2,Mot) & EXP(EX,P,Pre1, Pre2, Post1, Post2,Mot)
+;
 
-# -------- FIN TEST
+pred comparaisonAB(var2 EX,P,Pre1, Pre2, Post1, Post2, A1, A2, B1, B2,Mot) =
+fin(EX,P,Pre1,Pre2, Post1, Post2, Mot) & transitionsAB(EX,P,Pre1, Pre2, Post1, Post2, A1, A2, B1, B2,Mot)
+;
 
-
-pred systemComp(var2 AX,Pre1,Pre2,Pre3,Post1,Post2,Post3,P, Mot)=
-~(transitions(AX,P,Pre1, Pre2,Pre3, Post1, Post2,Post3,Mot) <=> AXP(AX,P,Pre1,Pre2,Pre3,Post1,Post2,Post3,Mot));
-
-#var2 AX,P,Pre1,Pre2,Pre3, Post1,Post2,Post3,Mot;
-#Mot = {0,1,2};
-#P = {1};
-#Pre1 = {};
-#Pre2 = {2};
-#Pre3 = {1,2};
-#Post1 = {};
-#Post2 = {1};
-#Post3 = {0};
-#systemComp(AX,Pre1,Pre2,Pre3, Post1,Post2,Post3, P, Mot);
-
-
-# ------------
-var2 AX,P,Pre1,Pre2,Pre3, Post1,Post2,Post3,A1, A2, A3, B1, B2, B3 ,Mot;
+var2 EX, P, Pre1, Pre2, Post1, Post2;
+var2 A1, A2, B1, B2;
+var2 Mot;
 Mot = {0,1,2};
-P = {1};
-Pre1 = {};
-Pre2 = {2};
-Pre3 = {1,2};
-Post1 = {};
-Post2 = {1};
-Post3 = {0};
-#systemCompTEST(AX,Pre1,Pre2,Pre3, Post1,Post2,Post3, P,A1, A2, A3, B1, B2, B3 , Mot);
-transitionsTEST(AX,P,Pre1, Pre2,Pre3, Post1, Post2,Post3,A1, A2, A3, B1, B2, B3 ,Mot);
+
+P = {2};
+Pre1 = {2};
+Pre2 = {1};
+Post1 = {0,1};
+Post2 = {0};
+
+comparaisonAB(EX, P, Pre1, Pre2, Post1, Post2, A1, A2, B1, B2,Mot);
+
+#comparaison(EX, P, Pre1, Pre2, Post1, Post2, Mot);
+
+#comparaisonTEST(EX, P, Pre1, Pre2, Post1, Post2,Mot);

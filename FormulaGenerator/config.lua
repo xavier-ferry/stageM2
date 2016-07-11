@@ -10,11 +10,13 @@ outputTXTFile = generatedFolder..'generated.txt'
 outputMONAFile = generatedFolder..'generated.mona'
 
 outputDEBUGMONAfile = "../luaToMONA/mona/comparaison/debug.mona"
+outputCOMPMONAfile = "../luaToMONA/mona/comparaison/comp.mona"
 
 Set=require('Set')
 Prop=require('Prop')
 
 
-require('configs/AX')
+require('configs/EX')
 gamma = 2
 
+debugON = true
