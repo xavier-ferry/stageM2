@@ -55,6 +55,10 @@ local function mytostring(a,res)
         res[#res+1] = '(' .. tostring(a.val1) .. '!=' .. tostring(a.val2) .. ')'
     elseif (a.op == 'Ex') then
         res[#res+1] = '(' .. tostring(a.val1) .. ' = ' .. tostring(a.val2) .. ' U '.. tostring(a.val3).. ')'
+    elseif (a.op == 'moinsProp') then
+        res[#res+1] = '(' .. tostring(a.val1) .. ' - ' .. tostring(a.val2) .. ')'
+    elseif (a.op == 'appartient') then
+        res[#res+1] = '(' .. tostring(a.val2) .. ' in ' .. tostring(a.val1) .. ')'
     elseif (a.op == '~') then
         res[#res+1] = '~' .. tostring(a.val)
     elseif (a.op == 'non') then

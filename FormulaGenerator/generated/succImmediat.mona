@@ -1,0 +1,14 @@
+include "succ1.mona";
+include "succ2.mona";
+
+
+pred successeursImmediat(var2 Pre1, Pre2, Post1, Post2, tmp1, tmp2,Mot)=
+ex2 truc1, truc2 :
+(
+  truc1 = tmp1 &
+  truc2 = tmp2 &
+
+  ex2 Xa : succ1(Post1,Xa,Pre1, Pre2, truc1, truc2,Mot) &
+  ex2 Xa : succ2(Post2,Xa,Pre1, Pre2, truc1, truc2,Mot)
+)
+;

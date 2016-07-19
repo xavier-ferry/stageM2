@@ -63,5 +63,5 @@ local function automateToString(automate)
     addTexte(res)
 end
 
-
+automate = returnAuto(1)
 automateToString(automate)

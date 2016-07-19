@@ -1,18 +1,8 @@
 Initial:
-((A+B)==empty) 
-Final:
 
+Final:
+A 
 Transitions:
 
-t2 :
- ~P & AX & ((A*Pre)==empty) & ((B'*Post)==empty) & (A'==(A+Post)) & (B'==(B-Pre)) 
-t4b :
- ~P & ~AX & ((A*Pre)==empty) & (((B-Pre)*Post)==empty) & (A'==(A-Post)) & (B' = (B-Pre) U (Post-A)) 
-t3 :
- P & ~AX & ~((B*Post)==empty) & (A'==(A-Post)) & (B'==B) 
 t1 :
- P & AX & ((B*Post)==empty) & (A'==(A+Post)) & (B'==B) 
-t3b :
- P & ~AX & ((B*Post)==empty) & (A'==(A-Post)) & (B' = B U (Post-A')) 
-t4 :
- ~P & ~AX & ((A*Pre)==empty) & ~(((B-Pre)*Post)==empty) & (A'==(A-Post)) & (B'==(B-Pre)) 
+ ~Xa & ~OK & (1 in Post) & ~Xa' 

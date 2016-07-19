@@ -67,6 +67,18 @@ function Set.affectUnion(a,b,c)
     return res
 end
 
+function Set.appartient(a,b)
+    local res = {op='appartient', val1 = a, val2 = b }
+    Prop.set(res)
+    return res
+end
+
+function Set.moinsProp(a,b)
+    local res = {op='moinsProp', val1 = a, val2 = b }
+    Prop.set(res)
+    return res
+end
+
 function mt.__bxor(a,b)
     return Set.egal(a,b)
 end

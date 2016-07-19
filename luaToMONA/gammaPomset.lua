@@ -66,7 +66,8 @@ successeurImmediat = successeurImmediat .. "      )\n"
 successeurImmediat = successeurImmediat .. "  );\n"
 
 
-local texte = preUnique .. "\n\n" .. relationGPomset .. '\n\n' .. partialOrder .. "\n\n" .. successeurImmediat
+-- local texte = preUnique .."\n\n" 
+local texte = relationGPomset .. '\n\n' .. partialOrder .. "\n\n" .. successeurImmediat
 io.write(texte)
 io.close(file)
 end

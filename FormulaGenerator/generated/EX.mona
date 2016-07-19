@@ -1,6 +1,7 @@
 pred final(var2 A1, A2,Mot) = 
    all1 x : 
-     (x+1 in Mot => x in Mot) &
+     (x+1 in Mot => x in Mot) 
+& 
 (x in A1 => x in Mot) &
 (x in A2 => x in Mot)
 ;
@@ -49,7 +50,12 @@ pred t4(var1 x, var2 EX,P,A1, A2,B1, B2,Pre1, Pre2, Post1, Post2,Mot)=
 
 pred conditions(var1 x, var2 A1, A2,B1, B2,Pre1, Pre2, Post1, Post2) = true & 
 ~(x in A1 & x in B1)  &
-~(x in A2 & x in B2)
+~(x in A2 & x in B2)  &
+(
+    ( x in Pre1 & x notin Pre2 ) |
+    ( x notin Pre1 & x in Pre2 ) |
+    x notin (Pre1 union Pre2)
+
 ;
 
 pred transitionFormule(var2 EX,P,Pre1, Pre2, Post1, Post2,Mot)=
@@ -63,16 +69,5 @@ t4(x,EX,P,A1, A2, B1, B2,Pre1, Pre2, Post1, Post2,Mot) )
 )) & 
 final(A1, A2,Mot) & initial(A1, A2, B1, B2,Mot)
 ))
-;
-
-pred transitionsAB(var2 EX,P,Pre1, Pre2, Post1, Post2,A1, A2, B1, B2,Mot)=
-(all1 x :
-x in Mot => ( conditions(x,A1, A2, B1, B2,Pre1, Pre2, Post1, Post2) & (
-t2(x,EX,P,A1, A2, B1, B2,Pre1, Pre2, Post1, Post2,Mot) |
-t3(x,EX,P,A1, A2, B1, B2,Pre1, Pre2, Post1, Post2,Mot) |
-t1(x,EX,P,A1, A2, B1, B2,Pre1, Pre2, Post1, Post2,Mot) |
-t4(x,EX,P,A1, A2, B1, B2,Pre1, Pre2, Post1, Post2,Mot) )
-)) & 
-final(A1, A2,Mot) & initial(A1, A2, B1, B2,Mot)
 ;
 

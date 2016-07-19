@@ -9,19 +9,38 @@
 require('config')
 require('luaToMonaFunctions')
 
-local file = io.open(outputMONAFile, "w")
-io.output(file)
+succ = false
+automate = auto()
 
-local aVerif = automate.proprietes.aVerifier[1]
-local prop1  = automate.proprietes.props[1]
-local prop2  = automate.proprietes.props[2]
-local props
-if (prop2 ~= nil ) then props = prop1 ..','..prop2 else props = prop1 end
+aVerif = ''
+prop1  = ''
+prop2  = ''
+props = ''
 
+local function reinitVariables()
+    aVerif = nil
+    prop1  = nil
+    prop2  = nil
+    props = nil
+    if (succ == true ) then B = nil end
+end
+local function generateProps(auto)
+    reinitVariables()
+
+    aVerif = auto.proprietes.aVerifier[1]
+    prop1  = auto.proprietes.props[1]
+    prop2  = auto.proprietes.props[2]
+    props = ''
+    if (prop2 ~= nil ) then props = prop1 ..','..prop2 else props = prop1 end
+
+    print('prop2 = ',prop2)
+    print('props = ',props)
+end
 
 local function replacePrime(txt)
     txt = string.gsub(txt, "x in A'", "x+1 in A")
     txt = string.gsub(txt, "x in B'", "x+1 in B")
+    txt = string.gsub(txt, "x in Xa'", "x+1 in Xa")
     return txt
 end
 
@@ -33,27 +52,28 @@ local function concat(contrainte,x,op, bLeft, aRight,option)
     if( option.indice ~= nil) then ind = option.indice else ind = option.i end
 
     local left,right = "",""
-    if ( contrainte.val1.val ~= nil) then
-        left = x .. " in ".. contrainte.val1.val
---        Si val vaut empty, on ajouter pas le i derriere
-        if (table.containsString(automate.proprietes.nePasDecliner,contrainte.val1.val) == false ) then
-            left = left ..tostring(ind) end
-    else
-        left = lireContrainte(contrainte.val1,option)
-        left = left:sub(1,-4)
-    end
 
-    if ( contrainte.val2.val ~= nil) then
-        right = x .. " in ".. contrainte.val2.val
---        Si val vaut empty, on ajouter pas le i derriere
-        if (table.containsString(automate.proprietes.nePasDecliner,contrainte.val2.val) == false ) then
-            right = right ..tostring(ind) end
-    else
-        right = lireContrainte(contrainte.val2,option)
-        right = right:sub(1,-4)
-    end
+        if ( contrainte.val1.val ~= nil) then
+            left = x .. " in ".. contrainte.val1.val
+    --        Si val vaut empty, on ajouter pas le i derriere
+            if (table.containsString(automate.proprietes.nePasDecliner,contrainte.val1.val) == false ) then
+                left = left ..tostring(ind) end
+        else
+            left = lireContrainte(contrainte.val1,option)
+            left = left:sub(1,-4)
+        end
 
-    return "(" .. bLeft..left .. op ..right ..aRight..")"
+        if ( contrainte.val2.val ~= nil) then
+            right = x .. " in ".. contrainte.val2.val
+    --        Si val vaut empty, on ajouter pas le i derriere
+            if (table.containsString(automate.proprietes.nePasDecliner,contrainte.val2.val) == false ) then
+                right = right ..tostring(ind) end
+        else
+            right = lireContrainte(contrainte.val2,option)
+            right = right:sub(1,-4)
+        end
+
+        return "(" .. bLeft..left .. op ..right ..aRight..")"
 
 end
 
@@ -93,6 +113,17 @@ function exist(contrainte,option)
     return res
 end
 
+function moinsProptoTXT(contrainte, option)
+    local res = ''
+    local aux = 'false'
+    if option.i ~= contrainte.val2 then aux = 'true' end
+    res = res .. '(x in ' .. contrainte.val1.val.. tostring(option.i) ..' & '..aux..' )&\n '
+    res = res:sub(1,-4)
+    res = res .. '& \n'
+    return res
+
+end
+
 
 function lireContrainte(contrainte, option)
     local op,left,right = '','',''
@@ -115,13 +146,17 @@ function lireContrainte(contrainte, option)
         op = ""
         left = '~('
         right = ')'
-    elseif (contrainte["op"] == "non" ) then
-        op = ""
-        left = '~('
-        right = ') & '
-        local res = lireContrainte(contrainte.val,option)
-        res = res:sub(1,-4)
-        return left .. res .. right
+    elseif (contrainte["op"] == "moinsProp" ) then
+        return moinsProptoTXT(contrainte,option)
+    elseif (contrainte["op"] == "appartient" ) then
+        return '(x in '..contrainte.val1..tostring(contrainte.val2)..') & \n'
+--    elseif (contrainte["op"] == "non" ) then
+--        op = ""
+--        left = '~('
+--        right = ') & '
+--        local res = lireContrainte(contrainte.val,option)
+--        res = res:sub(1,-4)
+--        return left .. res .. right
     elseif (contrainte["op"] == "Ex") then
         return exist(contrainte,option)
     else
@@ -142,21 +177,36 @@ end
 
 local function generateHeader(auto)
     if (auto == automate.initial) then
-        return "pred initial(var2 "..declinerVariables("A","B").. ",Mot) =\n"
+        local res = "pred "..prefix_fonction.."initial(var2 ".. declinerVariables('A')
+        print(B)
+        if B ~= nil then res =  res .. ','..declinerVariables('B') end
+        res = res .. ',Mot) = true     &\n'
+        return res
     elseif (auto == automate.final) then
-        local res =  "pred final(var2 "..declinerVariables(tostring(automate.final[1])).. ",Mot) = \n "
-        res = res .. "  all1 x : \n     (x+1 in Mot => x in Mot) &\n"
-        for i = 1, gamma do
-            res = res .. '(x in '..automate.final[1]..i..' => x in Mot) &\n'
-            end
-        res = res :sub(1,-4)
+        local res =  "pred "..prefix_fonction.."final(var2 "..declinerVariables(tostring(automate.final[1])).. ",Mot) = \n "
+        res = res .. "  all1 x : \n     (x+1 in Mot => x in Mot) \n"
+
+--        print(auto, auto())
+
+        if (succ == false) then
+            res = res .. '& \n'
+            for i = 1, gamma do
+                res = res .. '(x in '..automate.final[1]..i..' => x in Mot) &\n'
+                end
+            res = res :sub(1,-4)
+        end
+
         res = res .. '\n;\n'
         return res
     end
     for k,v in pairs(automate.transitions) do
         if (table.contains(v, auto)) then
-            return "pred "..k.."(var1 x, var2 "..aVerif..','..props..','..declinerVariables("A","B","Pre","Post")..
-                    ",Mot)=\n"
+            local res ='pred '..prefix_fonction..k..'(var1 x, var2 '..aVerif..','..props..','.. declinerVariables('A')
+            if B ~= nil then res =  res .. ','..declinerVariables('B') end
+            res = res .. ','..declinerVariables("Pre","Post")..',Mot)=\n'
+            return res
+            --            return "pred "..k.."(var1 x, var2 "..aVerif..','..props..','..declinerVariables("A","B","Pre","Post")..
+--                ",Mot)=\n"
         end
     end
 
@@ -170,7 +220,7 @@ local function lireAutomate(auto)
         right = ''
     }
 
-    if ( auto == automate.initial) then
+    if ( auto == automate.initial ) then
         option.x = '0'
         option.left = option.x .. ' in Mot => ('
         option.right = ')'
@@ -183,10 +233,20 @@ local function lireAutomate(auto)
         addTexte(res)
     else
         for _,v in pairs(auto) do
-        for i = 1, gamma do
-            option.i = i
-            res = res .. lireContrainte(v,option)
-        end
+            if (v['op'] == 'non') then
+                res = res .. '~('
+                for i = 1, gamma do
+                    option.i = i
+                    res = res .. lireContrainte(v.val,option)
+                end
+                res = res:sub(1,-4)
+                res = res .. ') & '
+            else
+                for i = 1, gamma do
+                    option.i = i
+                    res = res .. lireContrainte(v,option)
+                end
+            end
         end
         res = res:sub(1,-4) .. "\n;\n\n"
         res = replacePrime(res)
@@ -196,9 +256,13 @@ local function lireAutomate(auto)
 end
 
 local function conditions()
-    local res = 'pred conditions(var1 x, var2 '..declinerVariables('A','B','Pre','Post')..') =\n'
-    for i = 1, gamma do
-        res = res .. '~(x in A'..i..' & x in B'..i..') &\n'
+    local res = 'pred '..prefix_fonction..'conditions(var1 x, var2 '..declinerVariables('A')
+    if B ~= nil then res =  res .. ','..declinerVariables('B') end
+    res = res .. ','..declinerVariables('Pre','Post')..') = true & \n'
+    if B ~= nil then
+        for i = 1, gamma do
+            res = res .. '~(x in A'..i .. ' & x in B'..i .. ')  &\n'
+        end
     end
     res = res .. '(\n    '
     for i = 1, gamma do
@@ -213,44 +277,54 @@ local function conditions()
         res = res:sub(1,-3)
         res = res .. ' ) |\n    '
     end
---    res = res:sub(1,-2)
     res = res .. 'x notin ('
     for i = 1,gamma do
         res = res ..'Pre'..i..' union '
     end
     res =res:sub(1,-8)
     res = res .. ')\n);\n\n'
+    res =res:sub(1,-5)
+    res = res .. '\n;\n\n'
     addTexte(res)
 end
 local function choixTransition()
-    local res ='pred transitions(var2 '..aVerif..','..props..','..declinerVariables('Pre','Post')
+    local ABdecline = ''
+    if B ~= nil then ABdecline = declinerVariables('A','B')
+    else ABdecline = declinerVariables('A') end
+
+    local res ='pred '..fonction_choixTransition..'(var2 '..aVerif..','..props..','..declinerVariables('Pre','Post')
             ..',Mot)=\n'
-    res = res .. 'ex2 ' .. declinerVariables('A','B')..' :((\n'
+            .. 'ex2 ' .. ABdecline..' :((\n'
             ..'(all1 x :\n'
-            ..'x in Mot => ( conditions(x,'..declinerVariables('A','B','Pre','Post')..') & (\n'
+            ..'x in Mot => ( '..prefix_fonction..'conditions(x,'..ABdecline..','..declinerVariables('Pre','Post')..') & (\n'
     for k,_ in pairs(automate.transitions) do
-        res = res ..k.."(x,"..aVerif..','..props..','..declinerVariables("A","B","Pre","Post")..",Mot) |\n"
+        res = res ..prefix_fonction..k.."(x,"..aVerif..','..props..','..ABdecline..','..declinerVariables('Pre','Post')..",Mot) |\n"
     end
     res = res:sub(1,-3)
     res = res .. ')\n)) & \n'
-            .. 'final('..declinerVariables(automate.final[1])..',Mot) & initial('..
-            declinerVariables('A','B')..',Mot)\n))\n;\n\n'
+            ..prefix_fonction..'final('..declinerVariables(automate.final[1])..',Mot) & '..prefix_fonction..'initial('..
+            ABdecline..',Mot)\n))\n;\n\n'
     addTexte(res)
 end
 
 
 local function DEBUGchoixTransition()
-    local res ='pred transitionsAB(var2 '..aVerif..','..props..','..declinerVariables('Pre','Post','A','B')
+    local ABdecline = ''
+    if B ~= nil then ABdecline = declinerVariables('A','B')
+    else ABdecline = declinerVariables('A') end
+
+
+    local res ='pred transitionsAB(var2 '..aVerif..','..props..','..declinerVariables('Pre','Post')..','..ABdecline
             ..',Mot)=\n'
     res = res ..'(all1 x :\n'
-            ..'x in Mot => ( conditions(x,'..declinerVariables('A','B','Pre','Post')..') & (\n'
+            ..'x in Mot => ( '..prefix_fonction..'conditions(x,'..ABdecline..','..declinerVariables('Pre','Post')..') & (\n'
     for k,_ in pairs(automate.transitions) do
-        res = res ..k.."(x,"..aVerif..','..props..','..declinerVariables("A","B","Pre","Post")..",Mot) |\n"
+        res = res ..k.."(x,"..aVerif..','..props..','..ABdecline..','..declinerVariables('Pre','Post')..",Mot) |\n"
     end
     res = res:sub(1,-3)
     res = res .. ')\n)) & \n'
-            .. 'final('..declinerVariables(automate.final[1])..',Mot) & initial('..
-            declinerVariables('A','B')..',Mot)\n;\n\n'
+            .. prefix_fonction..'final('..declinerVariables(automate.final[1])..',Mot) & '..prefix_fonction..'initial('..
+            ABdecline..',Mot)\n;\n\n'
     addTexte(res)
 end
 
@@ -265,6 +339,7 @@ local function system()
 end
 
 local function generateMona()
+    generateProps(automate)
     lireAutomate(automate.final)
     lireAutomate(automate.initial)
     for _,v in pairs(automate.transitions) do
@@ -279,9 +354,52 @@ local function generateMona()
         debug(automate)
     end
 
-    system()
+--    system()
 end
 
 
-generateMona()
-io.close()
+
+local function generateFormula()
+    local file = io.open(outputMONAFile, "w")
+    io.output(file)
+    fonction_choixTransition = 'transitionFormule'
+    generateMona()
+    io.close()
+end
+
+local function generateSuccesseurImmadiats()
+    succ = true
+    for i= 1, gamma do
+        automate = succAuto(i)
+        outputSuccIndice = i
+        local file = io.open(generatedFolder .. 'succ'.. tostring(outputSuccIndice)..'.mona', "w")
+        io.output(file)
+        fonction_choixTransition = 'succ'..tostring(i)
+        prefix_fonction = 'succ'..tostring(i)..'_'
+        generateMona()
+        io.close()
+    end
+    prefix_fonction = ''
+
+    local file = io.open(generatedFolder .. 'succImmediat.mona', "w")
+    io.output(file)
+    res = ''
+    for i = 1, gamma do
+        res = res .. 'include "succ'..tostring(i)..'.mona";\n'
+    end
+
+    res = res .. '\n\npred successeursImmediat(var2 '..declinerVariables('Pre','Post')..',Mot)=\n'
+    res = res .. 'ex2 '..declinerVariables('truc')..' :\n(\n'
+
+    for i = 1, gamma do
+        res = res .. '  ex2 Xa : succ'..i..'(Post'..i..',Xa,'..declinerVariables('Pre','truc')..',Mot) &\n'
+    end
+    res = res:sub(1,-3)
+    res = res .. '\n)\n;'
+    io.write(res)
+    io.close()
+    succ = false
+end
+
+generateFormula()
+generateSuccesseurImmadiats()

@@ -1,42 +1,27 @@
 include "../operateurs.mona";
-include "debug.mona";
+include "../../../FormulaGenerator/generated/succImmediat.mona";
+include "../../../FormulaGenerator/generated/EX.mona";
 
-pred finMot(var2 P, Mot) =
- all1 x : x notin Mot => x notin P;
-
-
- pred fin( var2 EX,P,Pre1,Pre2, Post1, Post2, Mot)=
- finMot(EX union P union Pre1 union Pre2 union Post1 union Post2, Mot);
+#pred systemComp(var2 OK,Xa,Pre1, Pre2, Post1, Post2,Mot) =~(preUnique(Pre1, Pre2,Mot) => (transitions(OK,Xa,Pre1, Pre2, Post1, Post2,Mot) <=> OKP(OK,Xa,Pre1, Pre2, Post1, Post2,Mot)));
 
 
-pred comparaison(var2 EX,P,Pre1, Pre2, Post1, Post2,Mot) =
-preUnique(Pre1, Pre2,Mot) & fin(EX,P,Pre1,Pre2, Post1, Post2, Mot) & ~((transitions(EX,P,Pre1, Pre2, Post1, Post2,Mot) <=> EXP(EX,P,Pre1, Pre2, Post1, Post2,Mot)))
+
+pred system(var2 EX)=
+ex2 Pre1,Pre2,Post1, Post2, tmp1, tmp2,  Mot,P:
+Mot = {0,1,2,3} &
+tmp1 = {1,2} &
+tmp2 = {2} &
+Post1 = {0} &
+Post2 = {1} &
+~(
+preUnique(Pre1,Pre2,Mot) =>
+  (
+    ( successeursImmediat(Pre1, Pre2, Post1, Post2, tmp1 ,tmp2, Mot) &
+      transitionFormule(EX,P,Pre1, Pre2, Post1, Post2,Mot)  )
+      <=>
+      EXP(EX,P,Pre1, Pre2, Post1, Post2, Mot)
+  )
+)
 ;
 
-
-pred comparaisonTEST(var2 EX,P,Pre1, Pre2, Post1, Post2,Mot) =
- fin(EX,P,Pre1,Pre2, Post1, Post2, Mot) & transitions(EX,P,Pre1, Pre2, Post1, Post2,Mot)
-
- #preUnique(Pre1, Pre2,Mot) & EXP(EX,P,Pre1, Pre2, Post1, Post2,Mot)
-;
-
-pred comparaisonAB(var2 EX,P,Pre1, Pre2, Post1, Post2, A1, A2, B1, B2,Mot) =
-fin(EX,P,Pre1,Pre2, Post1, Post2, Mot) & transitionsAB(EX,P,Pre1, Pre2, Post1, Post2, A1, A2, B1, B2,Mot)
-;
-
-var2 EX, P, Pre1, Pre2, Post1, Post2;
-var2 A1, A2, B1, B2;
-var2 Mot;
-Mot = {0,1,2};
-
-P = {2};
-Pre1 = {2};
-Pre2 = {1};
-Post1 = {0,1};
-Post2 = {0};
-
-comparaisonAB(EX, P, Pre1, Pre2, Post1, Post2, A1, A2, B1, B2,Mot);
-
-#comparaison(EX, P, Pre1, Pre2, Post1, Post2, Mot);
-
-#comparaisonTEST(EX, P, Pre1, Pre2, Post1, Post2,Mot);
+var2 EX; system(EX);

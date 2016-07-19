@@ -5,6 +5,8 @@
 -- Time: 16:11
 -- To change this template use File | Settings | File Templates.
 --
+ require('config')
+
 function deepCopy(object)
     local lookup_table = {}
     local function _copy(object)
@@ -75,7 +77,9 @@ function debug(automate)
     end
     props = props:sub(1,-2)
     res = ' include "../operateurs.mona";\n'..
-            'include "debug.mona";\n\n'..
+            'include "debug.mona";\n'..
+            'include "../../../FormulaGenerator/generated/succImmediat.mona";\n'..
+            'include "../../../FormulaGenerator/generated/'..Formule..'.mona";\n\n'..
             'pred systemComp(var2 '..automate.proprietes.aVerifier[1]..','..props..','..declinerVariables('Pre','Post')..',Mot) =\n' ..
             '~(preUnique('..declinerVariables('Pre')..',Mot) => (transitions('..automate.proprietes.aVerifier[1]..','..props..
             ','..declinerVariables('Pre','Post')..',Mot) <=> '..automate.proprietes.aVerifier[1]..'P('..automate.proprietes.aVerifier[1]..','..
