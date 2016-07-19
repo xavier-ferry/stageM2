@@ -12,18 +12,20 @@ pred initial(var2 A1, A2,B1, B2,Mot) = true     &
 ;
 
 pred t2(var1 x, var2 EX,P,A1, A2,B1, B2,Pre1, Pre2, Post1, Post2,Mot)=
-~(x in P & x in P) & x in EX & x in EX & ((x in A1 & x in Pre1)  <=> x in empty) & 
-((x in A2 & x in Pre2)  <=> x in empty) & 
+~(x in P & x in P) & x in EX & x in EX & ((x in A1 & x in Post1)  <=> x in empty) & 
+((x in A2 & x in Post2)  <=> x in empty) & 
 ((x+1 in A1 & (x in Post1 & ~(x+1 in B1)) & 
 (x+1 in A2  <=> x in A2))| 
 ((x+1 in A1  <=> x in A1) & x+1 in A2 & (x in Post2 & ~(x+1 in B2)) )) &
-(x+1 in B1 <=> (x in B1 & ~(x in Pre1)) ) & 
-(x+1 in B2 <=> (x in B2 & ~(x in Pre2)) ) 
+(x+1 in B1 <=> (x in B1 & ~(x in Post1)) ) & 
+(x+1 in B2 <=> (x in B2 & ~(x in Post2)) ) 
 ;
 
 pred t3(var1 x, var2 EX,P,A1, A2,B1, B2,Pre1, Pre2, Post1, Post2,Mot)=
 x in P & x in P & ~(x in EX & x in EX) & ((x in B1 & x in Pre1)  <=> x in empty) & 
 ((x in B2 & x in Pre2)  <=> x in empty) & 
+((x+1 in A1 & x in Post1)  <=> x in empty) & 
+((x+1 in A2 & x in Post2)  <=> x in empty) & 
 (x+1 in A1 <=> (x in A1 & ~(x in Pre1)) ) & 
 (x+1 in A2 <=> (x in A2 & ~(x in Pre2)) ) & 
 (x+1 in B1 <=> (x in B1|x in Post1) ) & 
@@ -33,29 +35,26 @@ x in P & x in P & ~(x in EX & x in EX) & ((x in B1 & x in Pre1)  <=> x in empty)
 pred t1(var1 x, var2 EX,P,A1, A2,B1, B2,Pre1, Pre2, Post1, Post2,Mot)=
 x in P & x in P & x in EX & x in EX & ((x in B1 & x in Pre1)  <=> x in empty) & 
 ((x in B2 & x in Pre2)  <=> x in empty) & 
+(((x in A1 & ~(x in Pre1))  & x in Post1)  <=> x in empty) & 
+(((x in A2 & ~(x in Pre2))  & x in Post2)  <=> x in empty) & 
 ((x+1 in A1 & x in Post1 & (x+1 in A2  <=> (x in A2 & ~(x in Pre2)) ))| 
 ((x+1 in A1  <=> (x in A1 & ~(x in Pre1)) ) & x+1 in A2 & x in Post2)) &
-(x+1 in B1 <=> x in B1) & 
-(x+1 in B2 <=> x in B2) 
+(x+1 in B1 <=> (x in B1 & ~(x in Post1)) ) & 
+(x+1 in B2 <=> (x in B2 & ~(x in Post2)) ) 
 ;
 
 pred t4(var1 x, var2 EX,P,A1, A2,B1, B2,Pre1, Pre2, Post1, Post2,Mot)=
-~(x in P & x in P) & ~(x in EX & x in EX) & ((x in A1 & x in Pre1)  <=> x in empty) & 
-((x in A2 & x in Pre2)  <=> x in empty) & 
+~(x in P & x in P) & ~(x in EX & x in EX) & ((x in A1 & x in Post1)  <=> x in empty) & 
+((x in A2 & x in Post2)  <=> x in empty) & 
 (x+1 in A1 <=> x in A1) & 
 (x+1 in A2 <=> x in A2) & 
-(x+1 in B1 <=> ((x in B1 & ~(x in Pre1)) |x in Post1) ) & 
-(x+1 in B2 <=> ((x in B2 & ~(x in Pre2)) |x in Post2) ) 
+(x+1 in B1 <=> (x in B1|x in Post1) ) & 
+(x+1 in B2 <=> (x in B2|x in Post2) ) 
 ;
 
 pred conditions(var1 x, var2 A1, A2,B1, B2,Pre1, Pre2, Post1, Post2) = true & 
 ~(x in A1 & x in B1)  &
-~(x in A2 & x in B2)  &
-(
-    ( x in Pre1 & x notin Pre2 ) |
-    ( x notin Pre1 & x in Pre2 ) |
-    x notin (Pre1 union Pre2)
-
+~(x in A2 & x in B2) 
 ;
 
 pred transitionFormule(var2 EX,P,Pre1, Pre2, Post1, Post2,Mot)=

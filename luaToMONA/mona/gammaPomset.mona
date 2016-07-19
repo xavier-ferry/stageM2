@@ -1,25 +1,15 @@
-pred preUnique(var2 Pre1, Pre2,  Mot)=
- all1 x : x in Mot =>
-(
-( x in Pre1 & x notin Pre2 ) |
-    ( x notin Pre1 & x in Pre2 ) |
-    x notin (Pre1 union Pre2)
-);
-
-
-
-#Traduction de la relation de successeurImmediat sur les gamma-pomset
-pred relationGPomset(var1 x,y, var2 Pre1, Pre2, Post1, Post2, Mot) =
-  x < y &
+#Traduction de la relation de successeurImmediat sur les gamma-pomset 
+pred relationGPomset(var1 x,y, var2 Pre1, Pre2, Post1, Post2, Mot) = 
+  x < y & 
   (
-   ( x in Post1 & y in Pre1 & (all1 z:(z>x & z<y) => z notin Pre1)) |
-   ( x in Post2 & y in Pre2 & (all1 z:(z>x & z<y) => z notin Pre2)) 
+   ( x in Post1 & y in Pre1 & (all1 z:(z>x & z<y) => z notin Post1)) |
+   ( x in Post2 & y in Pre2 & (all1 z:(z>x & z<y) => z notin Post2)) 
  );
 
 
-#Traduction de la relation d'ordre partiel
+#Traduction de la relation d'ordre partiel 
  pred partialOrder(var1 x, y, var2 Pre1, Pre2, Post1, Post2, Mot) =
-   all2 X: ( (x in X &
+   all2 X: ( (x in X & 
              (all1 u,v: (relationGPomset(u,v,Pre1, Pre2, Post1, Post2, Mot) & u in X)
              => v in X)) => y in X);
 

@@ -1,8 +1,0 @@
-Initial:
-
-Final:
-A 
-Transitions:
-
-t1 :
- ~Xa & ~OK & (1 in Post) & ~Xa' 

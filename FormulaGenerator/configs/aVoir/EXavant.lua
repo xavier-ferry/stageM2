@@ -15,7 +15,8 @@ Pre   = Set('Pre')
 Post  = Set('Post')
 empty = Set()
 
-automate = {
+function auto()
+return {
     proprietes = {
         aVerifier = {
             "EX"
@@ -82,3 +83,6 @@ automate = {
         }
     }
 }
+
+end
+

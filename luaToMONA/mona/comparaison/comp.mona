@@ -2,26 +2,31 @@ include "../operateurs.mona";
 include "../../../FormulaGenerator/generated/succImmediat.mona";
 include "../../../FormulaGenerator/generated/EX.mona";
 
-#pred systemComp(var2 OK,Xa,Pre1, Pre2, Post1, Post2,Mot) =~(preUnique(Pre1, Pre2,Mot) => (transitions(OK,Xa,Pre1, Pre2, Post1, Post2,Mot) <=> OKP(OK,Xa,Pre1, Pre2, Post1, Post2,Mot)));
+pred listeConditions(var2 EX,P,Pre1,Pre2, Post1,Post2, Mot)=
+all1 x :
+  (x+1 in Mot => x in Mot) &
+  (x in EX => x in Mot) &
+  (x in P => x in Mot) &
+  (x in Pre1 => x in Mot) &
+  (x in Pre2 => x in Mot) &
+  (x in Post1 => x in Mot) &
+  (x in Post2 => x in Mot)
+;
 
 
 
-pred system(var2 EX)=
-ex2 Pre1,Pre2,Post1, Post2, tmp1, tmp2,  Mot,P:
-Mot = {0,1,2,3} &
-tmp1 = {1,2} &
-tmp2 = {2} &
-Post1 = {0} &
-Post2 = {1} &
+pred comp(var2 EX,P,Pre1, Pre2,  Post1, Post2, Mot) =
+ex2 tmp1, tmp2:
+listeConditions(EX,P,Pre1,Pre2, Post1,Post2, Mot) &
+successeursImmediat(Pre1, Pre2,  Post1, Post2,  tmp1 ,tmp2, Mot) &
 ~(
-preUnique(Pre1,Pre2,Mot) =>
-  (
-    ( successeursImmediat(Pre1, Pre2, Post1, Post2, tmp1 ,tmp2, Mot) &
-      transitionFormule(EX,P,Pre1, Pre2, Post1, Post2,Mot)  )
+      transitionFormule(EX,P,Pre1, Pre2,  Post1, Post2, Mot)
       <=>
-      EXP(EX,P,Pre1, Pre2, Post1, Post2, Mot)
-  )
+      EXP(EX,P,Pre1, Pre2,  Post1, Post2,  Mot)
 )
 ;
 
-var2 EX; system(EX);
+
+
+var2 EX,P,Pre1,Pre2, Post1, Post2, Mot;
+comp(EX,P,Pre1, Pre2,  Post1, Post2, Mot);

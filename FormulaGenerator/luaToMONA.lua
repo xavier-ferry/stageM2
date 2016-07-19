@@ -264,26 +264,29 @@ local function conditions()
             res = res .. '~(x in A'..i .. ' & x in B'..i .. ')  &\n'
         end
     end
-    res = res .. '(\n    '
-    for i = 1, gamma do
-            res = res .. '('
-        for j = 1, gamma  do
-            if j==i then
-                res = res .. ' x in Pre'..i..' &'
-            else
-                res = res .. ' x notin Pre'..j..' &'
+--    Pour afficher la condition : PreUnique
+    if false then
+        res = res .. '(\n    '
+        for i = 1, gamma do
+                res = res .. '('
+            for j = 1, gamma  do
+                if j==i then
+                    res = res .. ' x in Pre'..i..' &'
+                else
+                    res = res .. ' x notin Pre'..j..' &'
+                end
             end
+            res = res:sub(1,-3)
+            res = res .. ' ) |\n    '
         end
-        res = res:sub(1,-3)
-        res = res .. ' ) |\n    '
+        res = res .. 'x notin ('
+        for i = 1,gamma do
+            res = res ..'Pre'..i..' union '
+        end
+        res =res:sub(1,-8)
+        res = res .. ')\n);\n\n'
     end
-    res = res .. 'x notin ('
-    for i = 1,gamma do
-        res = res ..'Pre'..i..' union '
-    end
-    res =res:sub(1,-8)
-    res = res .. ')\n);\n\n'
-    res =res:sub(1,-5)
+    res =res:sub(1,-4)
     res = res .. '\n;\n\n'
     addTexte(res)
 end
@@ -388,14 +391,16 @@ local function generateSuccesseurImmadiats()
         res = res .. 'include "succ'..tostring(i)..'.mona";\n'
     end
 
-    res = res .. '\n\npred successeursImmediat(var2 '..declinerVariables('Pre','Post')..',Mot)=\n'
-    res = res .. 'ex2 '..declinerVariables('truc')..' :\n(\n'
+    res = res .. '\n\npred successeursImmediat(var2 '..declinerVariables('Pre','Post','tmp')..',Mot)=\n'
+--    res = res .. 'ex2 '..declinerVariables('truc')..' :\n(\n'
 
     for i = 1, gamma do
-        res = res .. '  ex2 Xa : succ'..i..'(Post'..i..',Xa,'..declinerVariables('Pre','truc')..',Mot) &\n'
+        res = res .. '  ex2 Xa : succ'..i..'(Pre'..i..',Xa,'..declinerVariables('tmp','Post')..',Mot) &\n'
     end
     res = res:sub(1,-3)
-    res = res .. '\n)\n;'
+--    res = res .. '\n)\n;'
+
+    res = res .. '\n\n;'
     io.write(res)
     io.close()
     succ = false
