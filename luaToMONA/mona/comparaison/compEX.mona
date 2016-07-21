@@ -1,0 +1,32 @@
+include "../operateurs.mona";
+include "../../../FormulaGenerator/generated/succImmediat.mona";
+include "../../../FormulaGenerator/generated/EX.mona";
+
+pred listeConditions(var2 EX,P,Pre1,Pre2, Post1,Post2, Mot)=
+all1 x :
+  (x+1 in Mot => x in Mot) &
+  (x in EX => x in Mot) &
+  (x in P => x in Mot) &
+  (x in Pre1 => x in Mot) &
+  (x in Pre2 => x in Mot) &
+  (x in Post1 => x in Mot) &
+  (x in Post2 => x in Mot)
+;
+
+
+
+pred comp(var2 EX,P,Pre1, Pre2,  Post1, Post2, Mot) =
+ex2 tmp1, tmp2:
+listeConditions(EX,P,Pre1,Pre2, Post1,Post2, Mot) &
+successeursImmediat(Pre1, Pre2,  Post1, Post2,  tmp1 ,tmp2, Mot) &
+~(
+      transitionFormule(EX,P,Pre1, Pre2,  Post1, Post2, Mot)
+      <=>
+      EXP(EX,P,Pre1, Pre2,  Post1, Post2,  Mot)
+)
+;
+
+
+
+var2 EX,P,Pre1,Pre2, Post1, Post2, Mot;
+comp(EX,P,Pre1, Pre2,  Post1, Post2, Mot);

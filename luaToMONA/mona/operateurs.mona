@@ -8,8 +8,12 @@ pred AXP( var2 RES, P,Pre1, Pre2, Post1, Post2, Mot)=
   EXP(Mot\RES, Mot\P,Pre1, Pre2, Post1, Post2,Mot);
 
 
- pred pEUq ( var2 RES, P, Q, Pre1, Pre2, Post1, Post2, Mot)= 
-  all1 x : ( x in Q => x in RES  & all1 y,z : (successeurImmediat(y,z,Pre1, Pre2, Post1, Post2, Mot) & y in P & z in RES) => y in RES);
+pred pEUq ( var2 RES, P, Q, Pre1, Pre2, Post1, Post2, Mot)= 
+all1 x : 
+   x in RES <=> ( x in Q |
+   ex1 z : (successeurImmediat(x,z,Pre1, Pre2, Post1, Post2,Mot) & x in P & z in RES )
+   )
+;
 
 
 pred pAUq ( var2 RES, P, Q, Pre1, Pre2, Post1, Post2, Mot)=

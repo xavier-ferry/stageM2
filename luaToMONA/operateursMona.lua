@@ -25,8 +25,8 @@ EXP = EXP .. "all1 x : ((x in RES) <=> ( ex1 y: y in P & successeurImmediat(x,y,
 local AXP = "pred AXP( var2 RES, P,"..prePost..", Mot)=\n"
 AXP = AXP .. "  EXP(Mot\\RES, Mot\\P,"..prePost..",Mot);\n"
 
-local pEUq = " pred pEUq ( var2 RES, P, Q, "..prePost..", Mot)= \n"
-pEUq = pEUq .. "  all1 x : ( x in Q => x in RES  & all1 y,z : (successeurImmediat(y,z,"..prePost..", Mot) & y in P & z in RES) => y in RES);\n"
+local pEUq = "pred pEUq ( var2 RES, P, Q, "..prePost..", Mot)= \n"
+pEUq = pEUq .. 'all1 x : \n   x in RES <=> ( x in Q |\n   ex1 z : (successeurImmediat(x,z,'..prePost..',Mot) & x in P & z in RES )\n   )\n;\n'
 
 local pAUq = "pred pAUq ( var2 RES, P, Q, "..prePost..", Mot)=\n"
 pAUq = pAUq .. "  all1 x : x in RES <=> ( x in Q |( x in P & all1 z : ~(successeurImmediat(x,z,"..prePost..", Mot)) | (successeurImmediat(x,z,"..prePost..", Mot) & z in RES))); \n"

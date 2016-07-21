@@ -18,21 +18,16 @@ all1 x :
 
 pred comp(var2 EPUQ, P, Q,Pre1, Pre2,  Post1, Post2, Mot) =
 ex2 tmp1, tmp2:
-EPUQ = {2} &
-P = {0}&
-Q = {2}&
-Pre1 = {}&
-Pre2 = {1,2}&
-Post1 = {}&
-Post2 = {0}&
-Mot = {0,1,2}&
 
-  listeConditions(EPUQ, P, Q,Pre1,Pre2, Post1,Post2, Mot) &
-  successeursImmediat(Pre1, Pre2,  Post1, Post2,  tmp1 ,tmp2, Mot) &
 
-transitionFormule(EPUQ, P, Q,Pre1, Pre2,  Post1, Post2, Mot)
-#pEUq(EPUQ, P, Q,Pre1, Pre2,  Post1, Post2,  Mot)
 
+listeConditions(EPUQ, P, Q,Pre1,Pre2, Post1,Post2, Mot) &
+successeursImmediat(Pre1, Pre2,  Post1, Post2,  tmp1 ,tmp2, Mot) &
+~(
+      transitionFormule(EPUQ, P, Q,Pre1, Pre2,  Post1, Post2, Mot)
+      <=>
+      pEUq(EPUQ, P, Q,Pre1, Pre2,  Post1, Post2,  Mot)
+)
 ;
 
 
