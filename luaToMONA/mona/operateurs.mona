@@ -26,16 +26,8 @@ pred pGUq(var2 RES,P,Q,Pre1, Pre2, Post1, Post2, Mot) =
 
 pred formuleEG(var2 RES, P,Pre1, Pre2, Post1, Post2, Mot) =
  all1 x : x in RES <=> (
-   x in P &
-   ( ~(ex1 y : successeurImmediat(x,y,Pre1, Pre2, Post1, Post2,Mot))
-    |
-    (ex1 y : successeurImmediat(x,y,Pre1, Pre2, Post1, Post2,Mot) & y in RES)
-   )
-
-);
-
-pred formuleEG2(var2 RES, P,Pre1, Pre2, Post1, Post2, Mot) =
- all1 x : x in RES <=> (
-   x in P &
-   ex1 y : successeurImmediat(x,y,Pre1, Pre2, Post1, Post2,Mot) => ( y in P & y in RES)
-);
+   ~(ex1 y : successeurImmediat(x,y,Pre1, Pre2, Post1, Post2,Mot) & x in P )
+   |
+   ( ex1 y : successeurImmediat(x,y,Pre1, Pre2, Post1, Post2,Mot) &
+   y in RES & x in P )
+ );

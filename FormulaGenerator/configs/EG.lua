@@ -18,6 +18,8 @@ Post  = Set('Post')
 Dead = Set('Dead')
 empty = Set()
 
+--Bug sympa :  <vide,P,2><2,nonP,vide> <vide, P, 2><2, P, vide>
+
 function auto()
     return {
         proprietes = {

@@ -58,15 +58,15 @@ pred EX_conditions(var1 x, var2 A1, A2,B1, B2,Pre1, Pre2, Post1, Post2) = true &
 ;
 
 pred transitionFormuleEX(var2 EX,P,Pre1, Pre2, Post1, Post2,Mot)=
-ex2 A1, A2, B1, B2,Dead:((
+ex2 A1, A2,B1, B2,Dead:((
 (all1 x :
-x in Mot => ( EX_conditions(x,A1, A2, B1, B2,Pre1, Pre2, Post1, Post2) & (
-EX_t2(x,EX,P,A1, A2, B1, B2,Pre1, Pre2, Post1, Post2,Dead,Mot) |
-EX_t3(x,EX,P,A1, A2, B1, B2,Pre1, Pre2, Post1, Post2,Dead,Mot) |
-EX_t1(x,EX,P,A1, A2, B1, B2,Pre1, Pre2, Post1, Post2,Dead,Mot) |
-EX_t4(x,EX,P,A1, A2, B1, B2,Pre1, Pre2, Post1, Post2,Dead,Mot) )
+x in Mot => ( EX_conditions(x,A1, A2,B1, B2,Pre1, Pre2, Post1, Post2) & (
+EX_t2(x,EX,P,A1, A2,B1, B2,Pre1, Pre2, Post1, Post2,Dead,Mot) |
+EX_t3(x,EX,P,A1, A2,B1, B2,Pre1, Pre2, Post1, Post2,Dead,Mot) |
+EX_t1(x,EX,P,A1, A2,B1, B2,Pre1, Pre2, Post1, Post2,Dead,Mot) |
+EX_t4(x,EX,P,A1, A2,B1, B2,Pre1, Pre2, Post1, Post2,Dead,Mot) )
 )) & 
-EX_final(A1, A2,Mot) & EX_initial(A1, A2, B1, B2,Mot)
+EX_final(A1, A2,Mot) & EX_initial(A1, A2,B1, B2,Mot)
 ))
 ;
 
