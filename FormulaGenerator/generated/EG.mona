@@ -1,0 +1,95 @@
+       # ----- Debut DEAD -----
+include "EX.mona";
+
+pred remplirDead(var2 Dead,Pre1, Pre2, Post1, Post2,Mot)=
+    transitionFormuleEX(Mot\Dead,Mot,Pre1, Pre2, Post1, Post2,Mot);
+
+       # ----- Fin DEAD -----
+
+
+pred EG_final(var2 A1, A2, C1, C2,Mot) = 
+   all1 x : 
+     (x+1 in Mot => x in Mot) 
+& 
+(x in A1 => x in Mot) &
+(x in C1 => x in Mot) &
+(x in A2 => x in Mot) &
+(x in C2 => x in Mot)
+;
+
+pred EG_initial(var2 A1, A2,B1, B2,C1, C2,Mot) = true     &
+(0 in Mot => (((0 in A1|0 in B1) |0 in C1)  <=> 0 in empty)) & 
+(0 in Mot => (((0 in A2|0 in B2) |0 in C2)  <=> 0 in empty)) 
+;
+
+pred EG_t2(var1 x, var2 EG,P,A1, A2,B1, B2,C1, C2,Pre1, Pre2, Post1, Post2,Dead,Mot)=
+~(x in Dead & x in Dead) & x in P & x in P & ~(x in EG & x in EG) & ((x in A1 & x in Post1)  <=> x in empty) & 
+((x in A2 & x in Post2)  <=> x in empty) & 
+(x+1 in A1 <=> x in A1) & 
+(x+1 in A2 <=> x in A2) & 
+(x+1 in B1 <=> (x in B1|x in Post1) ) & 
+(x+1 in B2 <=> (x in B2|x in Post2) ) & 
+((x+1 in C1 & x in Post1 & (x+1 in C2  <=> (x in C2 & ~(x in Pre2)) ))| 
+((x+1 in C1  <=> (x in C1 & ~(x in Pre1)) ) & x+1 in C2 & x in Post2))
+;
+
+pred EG_t3(var1 x, var2 EG,P,A1, A2,B1, B2,C1, C2,Pre1, Pre2, Post1, Post2,Dead,Mot)=
+~(x in P & x in P) & ~(x in EG & x in EG) & ((x in A1 & x in Post1)  <=> x in empty) & 
+((x in A2 & x in Post2)  <=> x in empty) & 
+(x+1 in A1 <=> x in A1) & 
+(x+1 in A2 <=> x in A2) & 
+(x+1 in B1 <=> (x in B1 & ~(x in Post1)) ) & 
+(x+1 in B2 <=> (x in B2 & ~(x in Post2)) ) & 
+(x+1 in C1 <=> (x in C1 & ~(x in Pre1)) ) & 
+(x+1 in C2 <=> (x in C2 & ~(x in Pre2)) ) 
+;
+
+pred EG_t1(var1 x, var2 EG,P,A1, A2,B1, B2,C1, C2,Pre1, Pre2, Post1, Post2,Dead,Mot)=
+~(x in Dead & x in Dead) & x in P & x in P & x in EG & x in EG & ((x in B1 & x in Pre1)  <=> x in empty) & 
+((x in B2 & x in Pre2)  <=> x in empty) & 
+((x in C1 & x in Post1)  <=> x in empty) & 
+((x in C2 & x in Post2)  <=> x in empty) & 
+(((x in A1 & x in Post1)  & ~(x in Pre1))  <=> x in empty) & 
+(((x in A2 & x in Post2)  & ~(x in Pre2))  <=> x in empty) & 
+((x+1 in A1 & x in Post1 & (x+1 in A2  <=> (x in A2 & ~(x in Pre2)) ))| 
+((x+1 in A1  <=> (x in A1 & ~(x in Pre1)) ) & x+1 in A2 & x in Post2)) &
+(x+1 in B1 <=> (x in B1 & ~(x in Post1)) ) & 
+(x+1 in B2 <=> (x in B2 & ~(x in Post2)) ) & 
+(x+1 in C1 <=> x in C1) & 
+(x+1 in C2 <=> x in C2) 
+;
+
+pred EG_t4(var1 x, var2 EG,P,A1, A2,B1, B2,C1, C2,Pre1, Pre2, Post1, Post2,Dead,Mot)=
+x in Dead & x in Dead & x in P & x in P & x in EG & x in EG & ((x in B1 & x in Pre1)  <=> x in empty) & 
+((x in B2 & x in Pre2)  <=> x in empty) & 
+((x in C1 & x in Post1)  <=> x in empty) & 
+((x in C2 & x in Post2)  <=> x in empty) & 
+(((x in A1 & x in Post1)  & ~(x in Pre1))  <=> x in empty) & 
+(((x in A2 & x in Post2)  & ~(x in Pre2))  <=> x in empty) & 
+(x+1 in A1 <=> (x in A1 & ~(x in Pre1)) ) & 
+(x+1 in A2 <=> (x in A2 & ~(x in Pre2)) ) & 
+(x+1 in B1 <=> (x in B1 & ~(x in Post1)) ) & 
+(x+1 in B2 <=> (x in B2 & ~(x in Post2)) ) & 
+(x+1 in C1 <=> x in C1) & 
+(x+1 in C2 <=> x in C2) 
+;
+
+pred EG_conditions(var1 x, var2 A1, A2,B1, B2,C1, C2,Pre1, Pre2, Post1, Post2) = true & 
+~(x in A1 & x in B1)  &
+~(x in A2 & x in B2) 
+;
+
+pred transitionFormuleEG(var2 EG,P,Pre1, Pre2, Post1, Post2,Mot)=
+ex2 A1, A2,B1, B2,C1, C2,Dead:((
+remplirDead(Dead,Pre1, Pre2, Post1, Post2,Mot) &
+(all1 x :
+x in Mot => ( EG_conditions(x,A1, A2,B1, B2,C1, C2,Pre1, Pre2, Post1, Post2) & (
+EG_t2(x,EG,P,A1, A2,B1, B2,C1, C2,Pre1, Pre2, Post1, Post2,Dead,Mot) |
+EG_t3(x,EG,P,A1, A2,B1, B2,C1, C2,Pre1, Pre2, Post1, Post2,Dead,Mot) |
+EG_t1(x,EG,P,A1, A2,B1, B2,C1, C2,Pre1, Pre2, Post1, Post2,Dead,Mot) |
+EG_t4(x,EG,P,A1, A2,B1, B2,C1, C2,Pre1, Pre2, Post1, Post2,Dead,Mot) )
+)) & 
+EG_final(A1, A2, C1, C2,Mot) & EG_initial(A1, A2,B1, B2,C1, C2,Mot)
+))
+;
+

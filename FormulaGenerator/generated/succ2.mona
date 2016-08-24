@@ -9,7 +9,7 @@ pred succ2_initial(var2 A1, A2,Mot) = true     &
 (0 in Mot => (0 in A2 <=> 0 in empty)) 
 ;
 
-pred succ2_t2(var1 x, var2 OK,Xa,A1, A2,Pre1, Pre2, Post1, Post2,Mot)=
+pred succ2_t2(var1 x, var2 OK,Xa,A1, A2,Pre1, Pre2, Post1, Post2,Dead,Mot)=
 ~(x in Xa & x in Xa) & ~(x in OK & x in OK) & (x in Post2) & 
 (x in Post2) & 
 (x+1 in A1 <=> (x in Post1 & true )) & 
@@ -17,7 +17,7 @@ pred succ2_t2(var1 x, var2 OK,Xa,A1, A2,Pre1, Pre2, Post1, Post2,Mot)=
 x+1 in Xa & x+1 in Xa
 ;
 
-pred succ2_t8(var1 x, var2 OK,Xa,A1, A2,Pre1, Pre2, Post1, Post2,Mot)=
+pred succ2_t8(var1 x, var2 OK,Xa,A1, A2,Pre1, Pre2, Post1, Post2,Dead,Mot)=
 x in Xa & x in Xa & ~(x in OK & x in OK) & (x in Post2) & 
 (x in Post2) & 
 ~((x in Pre2) & 
@@ -25,7 +25,7 @@ x in Xa & x in Xa & ~(x in OK & x in OK) & (x in Post2) &
 (x+1 in A2 <=> (x in Post2 & false )) 
 ;
 
-pred succ2_t3(var1 x, var2 OK,Xa,A1, A2,Pre1, Pre2, Post1, Post2,Mot)=
+pred succ2_t3(var1 x, var2 OK,Xa,A1, A2,Pre1, Pre2, Post1, Post2,Dead,Mot)=
 x in Xa & x in Xa & x in OK & x in OK & (x in Pre2) & 
 (x in Pre2) & 
 ~((x in Post2) & 
@@ -35,19 +35,19 @@ x+1 in Xa & x+1 in Xa & (x+1 in A1 <=> (x in A1|x in Post1) ) &
 (x+1 in A2 <=> (x in A2|x in Post2) ) 
 ;
 
-pred succ2_t1(var1 x, var2 OK,Xa,A1, A2,Pre1, Pre2, Post1, Post2,Mot)=
+pred succ2_t1(var1 x, var2 OK,Xa,A1, A2,Pre1, Pre2, Post1, Post2,Dead,Mot)=
 ~(x in Xa & x in Xa) & ~(x in OK & x in OK) & ~((x in Post2) & 
 (x in Post2) ) & ~(x+1 in Xa & x+1 in Xa)
 ;
 
-pred succ2_t7(var1 x, var2 OK,Xa,A1, A2,Pre1, Pre2, Post1, Post2,Mot)=
+pred succ2_t7(var1 x, var2 OK,Xa,A1, A2,Pre1, Pre2, Post1, Post2,Dead,Mot)=
 x in Xa & x in Xa & ~(x in OK & x in OK) & ~((x in Post2) & 
 (x in Post2) ) & ~((x in Pre2) & 
 (x in Pre2) ) & x+1 in Xa & x+1 in Xa & (x+1 in A1 <=> (x in A1|x in Post1) ) & 
 (x+1 in A2 <=> (x in A2|x in Post2) ) 
 ;
 
-pred succ2_t6(var1 x, var2 OK,Xa,A1, A2,Pre1, Pre2, Post1, Post2,Mot)=
+pred succ2_t6(var1 x, var2 OK,Xa,A1, A2,Pre1, Pre2, Post1, Post2,Dead,Mot)=
 x in Xa & x in Xa & ~(x in OK & x in OK) & (x in Pre2) & 
 (x in Pre2) & 
 (x in Post2) & 
@@ -57,7 +57,7 @@ x in Xa & x in Xa & ~(x in OK & x in OK) & (x in Pre2) &
 (x+1 in A2 <=> (x in Post2 & false )) 
 ;
 
-pred succ2_t5(var1 x, var2 OK,Xa,A1, A2,Pre1, Pre2, Post1, Post2,Mot)=
+pred succ2_t5(var1 x, var2 OK,Xa,A1, A2,Pre1, Pre2, Post1, Post2,Dead,Mot)=
 x in Xa & x in Xa & ~(x in OK & x in OK) & (x in Pre2) & 
 (x in Pre2) & 
 ~((x in Post2) & 
@@ -66,7 +66,7 @@ x in Xa & x in Xa & ~(x in OK & x in OK) & (x in Pre2) &
 (x+1 in A2 <=> (x in A2|x in Post2) ) 
 ;
 
-pred succ2_t4(var1 x, var2 OK,Xa,A1, A2,Pre1, Pre2, Post1, Post2,Mot)=
+pred succ2_t4(var1 x, var2 OK,Xa,A1, A2,Pre1, Pre2, Post1, Post2,Dead,Mot)=
 x in Xa & x in Xa & x in OK & x in OK & (x in Post2) & 
 (x in Post2) & 
 (x in Pre2) & 
@@ -81,17 +81,17 @@ pred succ2_conditions(var1 x, var2 A1, A2,Pre1, Pre2, Post1, Post2) = true
 ;
 
 pred succ2(var2 OK,Xa,Pre1, Pre2, Post1, Post2,Mot)=
-ex2 A1, A2 :((
+ex2 A1, A2,Dead:((
 (all1 x :
 x in Mot => ( succ2_conditions(x,A1, A2,Pre1, Pre2, Post1, Post2) & (
-succ2_t2(x,OK,Xa,A1, A2,Pre1, Pre2, Post1, Post2,Mot) |
-succ2_t8(x,OK,Xa,A1, A2,Pre1, Pre2, Post1, Post2,Mot) |
-succ2_t3(x,OK,Xa,A1, A2,Pre1, Pre2, Post1, Post2,Mot) |
-succ2_t1(x,OK,Xa,A1, A2,Pre1, Pre2, Post1, Post2,Mot) |
-succ2_t7(x,OK,Xa,A1, A2,Pre1, Pre2, Post1, Post2,Mot) |
-succ2_t6(x,OK,Xa,A1, A2,Pre1, Pre2, Post1, Post2,Mot) |
-succ2_t5(x,OK,Xa,A1, A2,Pre1, Pre2, Post1, Post2,Mot) |
-succ2_t4(x,OK,Xa,A1, A2,Pre1, Pre2, Post1, Post2,Mot) )
+succ2_t2(x,OK,Xa,A1, A2,Pre1, Pre2, Post1, Post2,Dead,Mot) |
+succ2_t8(x,OK,Xa,A1, A2,Pre1, Pre2, Post1, Post2,Dead,Mot) |
+succ2_t3(x,OK,Xa,A1, A2,Pre1, Pre2, Post1, Post2,Dead,Mot) |
+succ2_t1(x,OK,Xa,A1, A2,Pre1, Pre2, Post1, Post2,Dead,Mot) |
+succ2_t7(x,OK,Xa,A1, A2,Pre1, Pre2, Post1, Post2,Dead,Mot) |
+succ2_t6(x,OK,Xa,A1, A2,Pre1, Pre2, Post1, Post2,Dead,Mot) |
+succ2_t5(x,OK,Xa,A1, A2,Pre1, Pre2, Post1, Post2,Dead,Mot) |
+succ2_t4(x,OK,Xa,A1, A2,Pre1, Pre2, Post1, Post2,Dead,Mot) )
 )) & 
 succ2_final(A1, A2,Mot) & succ2_initial(A1, A2,Mot)
 ))

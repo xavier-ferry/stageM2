@@ -6,7 +6,7 @@
 -- To change this template use File | Settings | File Templates.
 --
 
-Formule = 'EPUQ'
+Formule = 'EG'
 
 
 generatedFolder = 'generated/'

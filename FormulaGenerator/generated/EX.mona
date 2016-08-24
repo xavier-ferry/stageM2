@@ -1,4 +1,4 @@
-pred final(var2 A1, A2,Mot) = 
+pred EX_final(var2 A1, A2,Mot) = 
    all1 x : 
      (x+1 in Mot => x in Mot) 
 & 
@@ -6,12 +6,12 @@ pred final(var2 A1, A2,Mot) =
 (x in A2 => x in Mot)
 ;
 
-pred initial(var2 A1, A2,B1, B2,Mot) = true     &
+pred EX_initial(var2 A1, A2,B1, B2,Mot) = true     &
 (0 in Mot => ((0 in A1|0 in B1)  <=> 0 in empty)) & 
 (0 in Mot => ((0 in A2|0 in B2)  <=> 0 in empty)) 
 ;
 
-pred t2(var1 x, var2 EX,P,A1, A2,B1, B2,Pre1, Pre2, Post1, Post2,Mot)=
+pred EX_t2(var1 x, var2 EX,P,A1, A2,B1, B2,Pre1, Pre2, Post1, Post2,Dead,Mot)=
 ~(x in P & x in P) & x in EX & x in EX & ((x in A1 & x in Post1)  <=> x in empty) & 
 ((x in A2 & x in Post2)  <=> x in empty) & 
 ((x+1 in A1 & (x in Post1 & ~(x+1 in B1)) & 
@@ -21,7 +21,7 @@ pred t2(var1 x, var2 EX,P,A1, A2,B1, B2,Pre1, Pre2, Post1, Post2,Mot)=
 (x+1 in B2 <=> (x in B2 & ~(x in Post2)) ) 
 ;
 
-pred t3(var1 x, var2 EX,P,A1, A2,B1, B2,Pre1, Pre2, Post1, Post2,Mot)=
+pred EX_t3(var1 x, var2 EX,P,A1, A2,B1, B2,Pre1, Pre2, Post1, Post2,Dead,Mot)=
 x in P & x in P & ~(x in EX & x in EX) & ((x in B1 & x in Pre1)  <=> x in empty) & 
 ((x in B2 & x in Pre2)  <=> x in empty) & 
 ((x+1 in A1 & x in Post1)  <=> x in empty) & 
@@ -32,7 +32,7 @@ x in P & x in P & ~(x in EX & x in EX) & ((x in B1 & x in Pre1)  <=> x in empty)
 (x+1 in B2 <=> (x in B2|x in Post2) ) 
 ;
 
-pred t1(var1 x, var2 EX,P,A1, A2,B1, B2,Pre1, Pre2, Post1, Post2,Mot)=
+pred EX_t1(var1 x, var2 EX,P,A1, A2,B1, B2,Pre1, Pre2, Post1, Post2,Dead,Mot)=
 x in P & x in P & x in EX & x in EX & ((x in B1 & x in Pre1)  <=> x in empty) & 
 ((x in B2 & x in Pre2)  <=> x in empty) & 
 (((x in A1 & ~(x in Pre1))  & x in Post1)  <=> x in empty) & 
@@ -43,7 +43,7 @@ x in P & x in P & x in EX & x in EX & ((x in B1 & x in Pre1)  <=> x in empty) &
 (x+1 in B2 <=> (x in B2 & ~(x in Post2)) ) 
 ;
 
-pred t4(var1 x, var2 EX,P,A1, A2,B1, B2,Pre1, Pre2, Post1, Post2,Mot)=
+pred EX_t4(var1 x, var2 EX,P,A1, A2,B1, B2,Pre1, Pre2, Post1, Post2,Dead,Mot)=
 ~(x in P & x in P) & ~(x in EX & x in EX) & ((x in A1 & x in Post1)  <=> x in empty) & 
 ((x in A2 & x in Post2)  <=> x in empty) & 
 (x+1 in A1 <=> x in A1) & 
@@ -52,21 +52,21 @@ pred t4(var1 x, var2 EX,P,A1, A2,B1, B2,Pre1, Pre2, Post1, Post2,Mot)=
 (x+1 in B2 <=> (x in B2|x in Post2) ) 
 ;
 
-pred conditions(var1 x, var2 A1, A2,B1, B2,Pre1, Pre2, Post1, Post2) = true & 
+pred EX_conditions(var1 x, var2 A1, A2,B1, B2,Pre1, Pre2, Post1, Post2) = true & 
 ~(x in A1 & x in B1)  &
 ~(x in A2 & x in B2) 
 ;
 
-pred transitionFormule(var2 EX,P,Pre1, Pre2, Post1, Post2,Mot)=
-ex2 A1, A2, B1, B2 :((
+pred transitionFormuleEX(var2 EX,P,Pre1, Pre2, Post1, Post2,Mot)=
+ex2 A1, A2, B1, B2,Dead:((
 (all1 x :
-x in Mot => ( conditions(x,A1, A2, B1, B2,Pre1, Pre2, Post1, Post2) & (
-t2(x,EX,P,A1, A2, B1, B2,Pre1, Pre2, Post1, Post2,Mot) |
-t3(x,EX,P,A1, A2, B1, B2,Pre1, Pre2, Post1, Post2,Mot) |
-t1(x,EX,P,A1, A2, B1, B2,Pre1, Pre2, Post1, Post2,Mot) |
-t4(x,EX,P,A1, A2, B1, B2,Pre1, Pre2, Post1, Post2,Mot) )
+x in Mot => ( EX_conditions(x,A1, A2, B1, B2,Pre1, Pre2, Post1, Post2) & (
+EX_t2(x,EX,P,A1, A2, B1, B2,Pre1, Pre2, Post1, Post2,Dead,Mot) |
+EX_t3(x,EX,P,A1, A2, B1, B2,Pre1, Pre2, Post1, Post2,Dead,Mot) |
+EX_t1(x,EX,P,A1, A2, B1, B2,Pre1, Pre2, Post1, Post2,Dead,Mot) |
+EX_t4(x,EX,P,A1, A2, B1, B2,Pre1, Pre2, Post1, Post2,Dead,Mot) )
 )) & 
-final(A1, A2,Mot) & initial(A1, A2, B1, B2,Mot)
+EX_final(A1, A2,Mot) & EX_initial(A1, A2, B1, B2,Mot)
 ))
 ;
 

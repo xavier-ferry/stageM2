@@ -36,7 +36,16 @@ pGUq = pGUq .. "  all1 x : x in RES <=> ( x in Q | ( x in P & ex1 z: (z in Q & z
 pGUq = pGUq .. " & (all1 y: ( y>x & y<z & partialOrder(x,y,"..prePost..",Mot) & partialOrder(y,z,"..prePost..",Mot)) => y in P)));\n"
 
 
-local texte = EXP .. "\n\n" .. AXP .. "\n\n" .. pEUq .. "\n\n" .. pAUq .. "\n\n" .. pGUq .. "\n"
+local EG = 'pred EG(var2 RES, P,'..prePost..', Mot) =\n'..
+  ' all1 x : x in RES <=> (\n'..
+    '   ~(ex1 y : successeurImmediat(x,y,'..prePost..',Mot) & x in P )\n'..
+    '   |\n'..
+    '   ( ex1 y : successeurImmediat(x,y,'..prePost..',Mot) &\n'..
+      '   y in RES & x in P )\n'..
+  ' );'
+
+
+local texte = EXP .. "\n\n" .. AXP .. "\n\n" .. pEUq .. "\n\n" .. pAUq .. "\n\n" .. pGUq .. "\n\n" .. EG .. "\n"
 io.write(texte)
 io.close(file)
 end

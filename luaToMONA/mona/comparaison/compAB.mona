@@ -1,6 +1,6 @@
 include "../operateurs.mona";
 include "../../../FormulaGenerator/generated/succImmediat.mona";
-include "../../../FormulaGenerator/generated/EG.mona";
+include "EGAB.mona";
 
 pred listeConditions(var2 EG,P,Pre1,Pre2, Post1,Post2, Mot)=
 all1 x :
@@ -15,15 +15,15 @@ all1 x :
 
 
 
-pred comp(var2 EG, P,Pre1, Pre2,  Post1, Post2, Mot) =
+pred comp(var2 EG, P,Pre1, Pre2,  Post1, Post2,A1, A2, B1, B2, Mot) =
 ex2 tmp1, tmp2:
 
-P = {0,2,3}&
+P = {0}&
 Pre1 = {}&
-Pre2 = {1,3}&
+Pre2 = {}&
 Post1 = {}&
-Post2 = {0,2}&
-Mot = {0,1,2,3}&
+Post2 = {0,1}&
+Mot = {0,1}&
 
 
 
@@ -31,12 +31,12 @@ listeConditions(EG, P,Pre1,Pre2, Post1,Post2, Mot) &
 successeursImmediat(Pre1, Pre2,  Post1, Post2,  tmp1 ,tmp2, Mot) &
 
 
-transitionFormuleEG(EG, P,Pre1, Pre2,  Post1, Post2, Mot)
+transitionFormule(EG, P,Pre1, Pre2,  Post1, Post2, A1, A2, B1, B2,Mot)
 #formuleEG(EG, P,Pre1, Pre2,  Post1, Post2,  Mot)
 
 ;
 
 
 
-var2 EG, P,Pre1,Pre2, Post1, Post2, Mot;
-comp(EG, P,Pre1, Pre2,  Post1, Post2, Mot);
+var2 EG, P,Pre1,Pre2, Post1, Post2,A1, A2, B1, B2, Mot;
+comp(EG, P,Pre1, Pre2,  Post1, Post2,A1, A2, B1, B2, Mot);

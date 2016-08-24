@@ -8,8 +8,8 @@ pred AXP( var2 RES, P,Pre1, Pre2, Post1, Post2, Mot)=
   EXP(Mot\RES, Mot\P,Pre1, Pre2, Post1, Post2,Mot);
 
 
-pred pEUq ( var2 RES, P, Q, Pre1, Pre2, Post1, Post2, Mot)= 
-all1 x : 
+pred pEUq ( var2 RES, P, Q, Pre1, Pre2, Post1, Post2, Mot)=
+all1 x :
    x in RES <=> ( x in Q |
    ex1 z : (successeurImmediat(x,z,Pre1, Pre2, Post1, Post2,Mot) & x in P & z in RES )
    )
@@ -17,9 +17,25 @@ all1 x :
 
 
 pred pAUq ( var2 RES, P, Q, Pre1, Pre2, Post1, Post2, Mot)=
-  all1 x : x in RES <=> ( x in Q |( x in P & all1 z : ~(successeurImmediat(x,z,Pre1, Pre2, Post1, Post2, Mot)) | (successeurImmediat(x,z,Pre1, Pre2, Post1, Post2, Mot) & z in RES))); 
+  all1 x : x in RES <=> ( x in Q |( x in P & all1 z : ~(successeurImmediat(x,z,Pre1, Pre2, Post1, Post2, Mot)) | (successeurImmediat(x,z,Pre1, Pre2, Post1, Post2, Mot) & z in RES)));
 
 
-pred pGUq(var2 RES,P,Q,Pre1, Pre2, Post1, Post2, Mot) = 
+pred pGUq(var2 RES,P,Q,Pre1, Pre2, Post1, Post2, Mot) =
   all1 x : x in RES <=> ( x in Q | ( x in P & ex1 z: (z in Q & z>x &  partialOrder(x,z,Pre1, Pre2, Post1, Post2,Mot)) & (all1 y: ( y>x & y<z & partialOrder(x,y,Pre1, Pre2, Post1, Post2,Mot) & partialOrder(y,z,Pre1, Pre2, Post1, Post2,Mot)) => y in P)));
 
+
+pred formuleEG(var2 RES, P,Pre1, Pre2, Post1, Post2, Mot) =
+ all1 x : x in RES <=> (
+   x in P &
+   ( ~(ex1 y : successeurImmediat(x,y,Pre1, Pre2, Post1, Post2,Mot))
+    |
+    (ex1 y : successeurImmediat(x,y,Pre1, Pre2, Post1, Post2,Mot) & y in RES)
+   )
+
+);
+
+pred formuleEG2(var2 RES, P,Pre1, Pre2, Post1, Post2, Mot) =
+ all1 x : x in RES <=> (
+   x in P &
+   ex1 y : successeurImmediat(x,y,Pre1, Pre2, Post1, Post2,Mot) => ( y in P & y in RES)
+);

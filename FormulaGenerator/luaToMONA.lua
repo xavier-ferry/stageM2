@@ -22,7 +22,10 @@ local function reinitVariables()
     prop1  = nil
     prop2  = nil
     props = nil
-    if (succ == true ) then B = nil end
+    if (succ == true ) then
+        B = nil
+        C = nil
+    end
 end
 local function generateProps(auto)
     reinitVariables()
@@ -33,13 +36,12 @@ local function generateProps(auto)
     props = ''
     if (prop2 ~= nil ) then props = prop1 ..','..prop2 else props = prop1 end
 
-    print('prop2 = ',prop2)
-    print('props = ',props)
 end
 
 local function replacePrime(txt)
     txt = string.gsub(txt, "x in A'", "x+1 in A")
     txt = string.gsub(txt, "x in B'", "x+1 in B")
+    txt = string.gsub(txt, "x in C'", "x+1 in C")
     txt = string.gsub(txt, "x in Xa'", "x+1 in Xa")
     return txt
 end
@@ -178,12 +180,12 @@ end
 local function generateHeader(auto)
     if (auto == automate.initial) then
         local res = "pred "..prefix_fonction.."initial(var2 ".. declinerVariables('A')
-        print(B)
         if B ~= nil then res =  res .. ','..declinerVariables('B') end
+        if C ~= nil then res =  res .. ','..declinerVariables('C') end
         res = res .. ',Mot) = true     &\n'
         return res
     elseif (auto == automate.final) then
-        local res =  "pred "..prefix_fonction.."final(var2 "..declinerVariables(tostring(automate.final[1])).. ",Mot) = \n "
+        local res =  "pred "..prefix_fonction.."final(var2 "..declinerVariables(automate.final[1],automate.final[2]).. ",Mot) = \n "
         res = res .. "  all1 x : \n     (x+1 in Mot => x in Mot) \n"
 
 --        print(auto, auto())
@@ -192,6 +194,10 @@ local function generateHeader(auto)
             res = res .. '& \n'
             for i = 1, gamma do
                 res = res .. '(x in '..automate.final[1]..i..' => x in Mot) &\n'
+                if (automate.final[2] ~= nil) then
+                    res = res .. '(x in '..automate.final[2]..i..' => x in Mot) &\n'
+                end
+
                 end
             res = res :sub(1,-4)
         end
@@ -203,7 +209,8 @@ local function generateHeader(auto)
         if (table.contains(v, auto)) then
             local res ='pred '..prefix_fonction..k..'(var1 x, var2 '..aVerif..','..props..','.. declinerVariables('A')
             if B ~= nil then res =  res .. ','..declinerVariables('B') end
-            res = res .. ','..declinerVariables("Pre","Post")..',Mot)=\n'
+            if C ~= nil then res =  res .. ','..declinerVariables('C') end
+            res = res .. ','..declinerVariables("Pre","Post")..',Dead,Mot)=\n'
             return res
             --            return "pred "..k.."(var1 x, var2 "..aVerif..','..props..','..declinerVariables("A","B","Pre","Post")..
 --                ",Mot)=\n"
@@ -258,6 +265,7 @@ end
 local function conditions()
     local res = 'pred '..prefix_fonction..'conditions(var1 x, var2 '..declinerVariables('A')
     if B ~= nil then res =  res .. ','..declinerVariables('B') end
+    if C ~= nil then res =  res .. ','..declinerVariables('C') end
     res = res .. ','..declinerVariables('Pre','Post')..') = true & \n'
     if B ~= nil then
         for i = 1, gamma do
@@ -291,21 +299,26 @@ local function conditions()
     addTexte(res)
 end
 local function choixTransition()
-    local ABdecline = ''
-    if B ~= nil then ABdecline = declinerVariables('A','B')
-    else ABdecline = declinerVariables('A') end
+    local ABdecline = declinerVariables('A')
+    if B ~= nil then ABdecline =  ABdecline .. ','..declinerVariables('B') end
+    if C ~= nil then ABdecline =  ABdecline .. ','..declinerVariables('C') end
+
 
     local res ='pred '..fonction_choixTransition..'(var2 '..aVerif..','..props..','..declinerVariables('Pre','Post')
             ..',Mot)=\n'
-            .. 'ex2 ' .. ABdecline..' :((\n'
-            ..'(all1 x :\n'
+            .. 'ex2 ' .. ABdecline..',Dead:((\n'
+
+            if fonction_choixTransition == 'transitionFormule'..Formule then
+                res = res .. 'remplirDead(Dead,'..declinerVariables('Pre','Post')..',Mot) &\n'
+            end
+            res  = res ..'(all1 x :\n'
             ..'x in Mot => ( '..prefix_fonction..'conditions(x,'..ABdecline..','..declinerVariables('Pre','Post')..') & (\n'
     for k,_ in pairs(automate.transitions) do
-        res = res ..prefix_fonction..k.."(x,"..aVerif..','..props..','..ABdecline..','..declinerVariables('Pre','Post')..",Mot) |\n"
+        res = res ..prefix_fonction..k.."(x,"..aVerif..','..props..','..ABdecline..','..declinerVariables('Pre','Post')..",Dead,Mot) |\n"
     end
     res = res:sub(1,-3)
     res = res .. ')\n)) & \n'
-            ..prefix_fonction..'final('..declinerVariables(automate.final[1])..',Mot) & '..prefix_fonction..'initial('..
+            ..prefix_fonction..'final('..declinerVariables(automate.final[1],automate.final[2])..',Mot) & '..prefix_fonction..'initial('..
             ABdecline..',Mot)\n))\n;\n\n'
     addTexte(res)
 end
@@ -341,6 +354,17 @@ local function system()
     addTexte(res)
 end
 
+local function generateDead()
+    if (Formule~='EX') then
+        local res = '       # ----- Debut DEAD -----\n'..
+            'include "EX.mona";\n\n'..
+            'pred remplirDead(var2 Dead,'..declinerVariables('Pre','Post')..',Mot)=\n    '..
+            'transitionFormuleEX(Mot\\Dead,Mot,'..declinerVariables('Pre','Post')..',Mot);\n\n'..
+            '       # ----- Fin DEAD -----\n\n\n'
+        addTexte(res)
+    end
+end
+
 local function generateMona()
     generateProps(automate)
     lireAutomate(automate.final)
@@ -363,9 +387,12 @@ end
 
 
 local function generateFormula()
-    local file = io.open(outputMONAFile, "w")
+    file = io.open(outputMONAFile, "w")
     io.output(file)
-    fonction_choixTransition = 'transitionFormule'
+    fonction_choixTransition = 'transitionFormule'..Formule
+    prefix_fonction = Formule..'_'
+
+    generateDead()
     generateMona()
     io.close()
 end

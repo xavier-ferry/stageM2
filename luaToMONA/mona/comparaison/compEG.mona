@@ -17,26 +17,17 @@ all1 x :
 
 pred comp(var2 EG, P,Pre1, Pre2,  Post1, Post2, Mot) =
 ex2 tmp1, tmp2:
-
-P = {0,2,3}&
-Pre1 = {}&
-Pre2 = {1,3}&
-Post1 = {}&
-Post2 = {0,2}&
-Mot = {0,1,2,3}&
-
-
-
 listeConditions(EG, P,Pre1,Pre2, Post1,Post2, Mot) &
 successeursImmediat(Pre1, Pre2,  Post1, Post2,  tmp1 ,tmp2, Mot) &
-
-
-transitionFormuleEG(EG, P,Pre1, Pre2,  Post1, Post2, Mot)
-#formuleEG(EG, P,Pre1, Pre2,  Post1, Post2,  Mot)
-
+~(
+      transitionFormuleEG(EG, P,Pre1, Pre2,  Post1, Post2, Mot)
+      <=>
+      formuleEG(EG, P,Pre1, Pre2,  Post1, Post2,  Mot)
+)
 ;
 
 
 
 var2 EG, P,Pre1,Pre2, Post1, Post2, Mot;
+
 comp(EG, P,Pre1, Pre2,  Post1, Post2, Mot);

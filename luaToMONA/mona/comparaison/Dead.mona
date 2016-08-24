@@ -1,0 +1,20 @@
+include "../operateurs.mona";
+include "../../../FormulaGenerator/generated/succImmediat.mona";
+include "../../../FormulaGenerator/generated/EX.mona";
+
+pred remplirDead(var2 Dead,Pre1, Pre2, Post1, Post2, Mot)=
+  EXP(Mot\Dead,Mot,Pre1,Pre2,Post1,Post2,Mot)
+;
+
+pred test (var2 Dead)=
+  ex2 Pre1,Pre2,Post1,Post2,Mot:
+  Pre1 = {}&
+  Pre2 = {2}&
+  Post1 = {0}&
+  Post2 = {1}&
+  Mot = {0,1,2}&
+  remplirDead(Dead,Pre1,Pre2,Post1,Post2,Mot);
+
+
+var2 Dead;
+test(Dead);
